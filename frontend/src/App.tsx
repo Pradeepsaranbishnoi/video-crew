@@ -22,6 +22,7 @@ export default function App() {
         <Route path="/differentiation" element={<DifferentiationPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
+        
       </Routes>
       <Footer/>
     </Router>

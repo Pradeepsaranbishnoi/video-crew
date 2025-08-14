@@ -116,7 +116,7 @@ export default function PortfolioGrid() {
                 <span className="text-[#2448FF]">Practical Works</span>
                 </h1>
 
-                <div className="flex justify-center gap-4 mb-12">
+                <div className="flex flex-wrap justify-center gap-4 mb-12">
                 <button onClick={() => setFilter("all")} className={btnClass("all")}>
                     광고 · 홍보 영상 
                 </button>
