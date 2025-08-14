@@ -2,7 +2,7 @@ import AboutHero from '../components/about/AboutHero';
 import WorkCulture from '../components/about/WorkCulture';
 import ClientsSection from '../components/common/ClientsSection';
 import Dashed from '../components/common/Dashed';
-import ServicesGrid from '../components/common/ServicesGrid';
+import ServicesGrid from '../components/common/ServicesGrid.tsx';
 
 export default function About() {
   const HomeServices = [

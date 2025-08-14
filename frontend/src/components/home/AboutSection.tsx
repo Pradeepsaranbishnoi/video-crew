@@ -1,4 +1,4 @@
-import ServicesGrid from "../../components/common/ServicesGrid";
+import ServicesGrid from "../common/ServicesGrid";
 
 export default function AboutSection() {
   const HomeServices = [

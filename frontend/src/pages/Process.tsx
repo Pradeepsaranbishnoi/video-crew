@@ -91,7 +91,7 @@ export default function Process(){
                 <img src="/Process/right.png" className="absolute right-0 top-[20%]"/>
                 <img src="/Process/left.png" className="absolute left-0 top-[40%]"/>
                 <img src="/Process/right.png" className="absolute right-0 bottom-[0%]"/>
-                {processSteps.map((step, index) => (
+                {processSteps.map((step) => (
                     <ProcessStep
                     key={step.number}
                     number={step.number}

@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function PortfolioPreview() {
   // First row images (scrolling left to right)
   const topRowImages = [
