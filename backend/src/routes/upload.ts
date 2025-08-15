@@ -70,8 +70,7 @@ router.post('/image', protect, upload.single('image'), async (req: Request, res:
     }
 
     // Generate full URL for the uploaded file
-    const baseUrl = process.env.BACKEND_URL || 'http://localhost:5000';
-    const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
+    const fileUrl = `/uploads/${req.file.filename}`;
     
     // Save media file info to database
     const mediaFile = new MediaFile({
@@ -117,8 +116,7 @@ router.post('/video', protect, upload.single('video'), async (req: Request, res:
     }
 
     // Generate full URL for the uploaded file
-    const baseUrl = process.env.BACKEND_URL || 'http://localhost:5000';
-    const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
+    const fileUrl = `/uploads/${req.file.filename}`;
     
     // Save media file info to database
     const mediaFile = new MediaFile({

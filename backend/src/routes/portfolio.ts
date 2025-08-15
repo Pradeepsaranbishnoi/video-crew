@@ -9,11 +9,18 @@ const router = Router();
 // Public - get all portfolio items
 router.get('/', async (req: Request, res: Response) => {
   try {
+    console.log('Fetching portfolio items...');
     const items = await DatabaseService.getAllPortfolioItems();
+    console.log(`Found ${items.length} portfolio items`);
     res.json({ success: true, data: items });
   } catch (err: any) {
     console.error('Get portfolio items error:', err);
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Error stack:', err.stack);
+    res.status(500).json({ 
+      success: false, 
+      message: err.message || 'Failed to fetch portfolio items',
+      error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 });
 
