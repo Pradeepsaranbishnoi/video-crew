@@ -69,6 +69,9 @@ JWT_SECRET=your-super-secret-jwt-key
 
 # CORS
 FRONTEND_URL=http://localhost:5173
+
+# API Configuration (for generating full URLs for uploaded files)
+API_URL=http://localhost:5000
 ```
 
 ## 📁 Project Structure
@@ -308,6 +311,8 @@ const upload = multer({
   }
 });
 ```
+
+**Important**: Set the `API_URL` environment variable to ensure uploaded files have correct full URLs. This is crucial for the frontend to properly display uploaded media files.
 
 ### File Storage
 - Files stored in `uploads/` directory

@@ -74,6 +74,8 @@ export default function MediaAdmin() {
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+
+
   // Load media files from API
   useEffect(() => {
     const loadMedia = async () => {
@@ -84,6 +86,7 @@ export default function MediaAdmin() {
         // Transform API data to match our interface
         const transformedFiles: MediaFile[] = apiFiles.map((file: any) => {
           console.log('Media file from API:', file); // Debug log
+          
           return {
             id: file._id,
             name: file.originalName,
