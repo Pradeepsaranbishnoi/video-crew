@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { FolderOpen, MessageSquare, Upload, TrendingUp, Users, Eye, Calendar } from "lucide-react";
+import { FolderOpen, MessageSquare, Upload, TrendingUp, Users, Eye, Calendar, Plus, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Seo from "../../components/common/Seo";
 import { apiService } from "../../services/api";
 
@@ -8,16 +9,19 @@ interface DashboardStats {
   totalContacts: number;
   totalMedia: number;
   monthlyViews: number;
+  newContacts: number;
 }
 
 export default function Dashboard() {
   console.log("Dashboard component rendering"); // Debug log
+  const navigate = useNavigate();
 
   const [stats, setStats] = useState<DashboardStats>({
     totalPortfolio: 0,
     totalContacts: 0,
     totalMedia: 0,
     monthlyViews: 0,
+    newContacts: 0,
   });
 
   const [recentActivities] = useState([
@@ -58,17 +62,28 @@ export default function Dashboard() {
         // Load contact inquiries
         const contactInquiries = await apiService.getContactInquiries();
         
+        // Load media files
+        const mediaFiles = await apiService.getMediaFiles();
+        
         // Calculate stats
         const totalPortfolio = portfolioItems.length;
         const totalContacts = contactInquiries.length;
-        const totalMedia = portfolioItems.length; // For now, using portfolio count as media count
+        const totalMedia = mediaFiles.length;
         const monthlyViews = Math.floor(Math.random() * 20000) + 5000; // Mock views for now
+        
+        // Calculate new contacts (last 7 days)
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        const newContacts = contactInquiries.filter(contact => 
+          new Date(contact.createdAt || contact.created_at || '') > oneWeekAgo
+        ).length;
         
         setStats({
           totalPortfolio,
           totalContacts,
           totalMedia,
           monthlyViews,
+          newContacts,
         });
       } catch (error) {
         console.error('Failed to load dashboard stats:', error);
@@ -78,12 +93,26 @@ export default function Dashboard() {
           totalContacts: 0,
           totalMedia: 0,
           monthlyViews: 0,
+          newContacts: 0,
         });
       }
     };
 
     loadStats();
   }, []);
+
+  // Quick action handlers
+  const handlePortfolioAdd = () => {
+    navigate('/admin/portfolio');
+  };
+
+  const handleContactsCheck = () => {
+    navigate('/admin/contacts');
+  };
+
+  const handleMediaUpload = () => {
+    navigate('/admin/media');
+  };
 
   const statCards = [
     {
@@ -204,26 +233,51 @@ export default function Dashboard() {
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <h3 className="text-xl font-semibold text-white mb-4 font-korean">빠른 작업</h3>
           <div className="grid grid-cols-2 gap-4">
-            <button className="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-left">
-              <FolderOpen className="w-6 h-6 text-white mb-2" />
+            <button 
+              onClick={handlePortfolioAdd}
+              className="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-left cursor-pointer group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <FolderOpen className="w-6 h-6 text-white" />
+                <Plus className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
               <p className="text-white font-medium font-korean">포트폴리오 추가</p>
               <p className="text-blue-200 text-sm font-korean">새 작품 등록</p>
             </button>
 
-            <button className="p-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-left">
-              <MessageSquare className="w-6 h-6 text-white mb-2" />
+            <button 
+              onClick={handleContactsCheck}
+              className="p-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-left cursor-pointer group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <MessageSquare className="w-6 h-6 text-white" />
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  {stats.newContacts}
+                </span>
+              </div>
               <p className="text-white font-medium font-korean">문의 확인</p>
-              <p className="text-green-200 text-sm font-korean">새 문의 {stats.totalContacts}건</p>
+              <p className="text-green-200 text-sm font-korean">새 문의 {stats.newContacts}건</p>
             </button>
 
-            <button className="p-4 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-left">
-              <Upload className="w-6 h-6 text-white mb-2" />
+            <button 
+              onClick={handleMediaUpload}
+              className="p-4 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-left cursor-pointer group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <Upload className="w-6 h-6 text-white" />
+                <span className="text-purple-200 text-xs">{stats.totalMedia}개</span>
+              </div>
               <p className="text-white font-medium font-korean">미디어 업로드</p>
               <p className="text-purple-200 text-sm font-korean">파일 관리</p>
             </button>
 
-            <button className="p-4 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors text-left">
-              <Users className="w-6 h-6 text-white mb-2" />
+            <button 
+              className="p-4 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors text-left cursor-pointer group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <Users className="w-6 h-6 text-white" />
+                <Settings className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
               <p className="text-white font-medium font-korean">사용자 관리</p>
               <p className="text-orange-200 text-sm font-korean">계정 설정</p>
             </button>
