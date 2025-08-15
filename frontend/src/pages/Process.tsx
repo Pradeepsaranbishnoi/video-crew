@@ -1,6 +1,6 @@
-import { motion } from "framer-motion"
-import AnimatedText from "../components/common/AnimatedText"
+
 import ProcessStep from "../components/process/ProcessStep"
+import ProcessHero from "../components/process/ProcessHero"
 import Seo from "../components/common/Seo";
 
 export default function Process(){

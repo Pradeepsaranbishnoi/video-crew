@@ -13,9 +13,7 @@ interface AnimatedTextProps {
 export default function AnimatedText({ 
   children, 
   className = '', 
-  delay = 0, 
   duration = 0.6,
-  stagger = 0.1,
   as = 'div'
 }: AnimatedTextProps) {
   const words = typeof children === 'string' ? children.split(' ') : [children];
