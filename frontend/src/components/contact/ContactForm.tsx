@@ -38,7 +38,7 @@ const platforms = [
 ];
 
 const inputClass =
-  "w-full bg-white/10 border border-gray-600 px-4 py-4 text-white placeholder-gray-400 focus:border-gray-400 focus:outline-none text-[14px] sm:text-[15px] lg:text-base";
+  "w-full bg-white/10 border border-gray-600 px-4 py-4 text-white placeholder-gray-400 focus:border-gray-400 focus:outline-none text-[14px] sm:text-[15px] lg:text-base font-korean";
 const selectClass = `${inputClass} appearance-none cursor-pointer`;
 
 export default function ContactForm() {
@@ -133,7 +133,7 @@ export default function ContactForm() {
   return (
     <section className="pt-16 sm:pt-20 lg:pt-21 pb-16 sm:pb-20 lg:pb-24.5 bg-black px-4 sm:px-6 lg:px-0">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-center text-[26px] sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-10 sm:mb-14 lg:mb-16">
+        <h2 className="text-center text-[26px] sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-10 sm:mb-14 lg:mb-16 font-english">
           Contact Us
         </h2>
 
@@ -214,7 +214,7 @@ export default function ContactForm() {
               className="mt-1 w-4 h-4 text-blue-600 border-gray-600 rounded focus:ring-2"
               required
             />
-            <label className="text-xs sm:text-sm text-gray-300 leading-snug">
+            <label className="text-xs sm:text-sm text-gray-300 leading-snug font-korean">
               개인정보 수집 및 이용에 동의합니다.
             </label>
           </div>
@@ -223,7 +223,7 @@ export default function ContactForm() {
             <button
               type="submit"
               disabled={isSubmitting || !formData.privacyAgreed}
-              className="bg-[#2448FF] hover:bg-blue-700 disabled:bg-gray-600 px-8 sm:px-12 lg:px-22.5 py-2.5 rounded-full text-sm sm:text-base lg:text-lg font-medium transition-all duration-300 hover:scale-105 disabled:cursor-no-drop disabled:hover:scale-100 cursor-pointer"
+              className="bg-[#2448FF] hover:bg-blue-700 disabled:bg-gray-600 px-8 sm:px-12 lg:px-22.5 py-2.5 rounded-full text-sm sm:text-base lg:text-lg font-medium transition-all duration-300 hover:scale-105 disabled:cursor-no-drop disabled:hover:scale-100 cursor-pointer font-korean"
             >
               {isSubmitting ? "전송 중..." : "제출하기"}
             </button>

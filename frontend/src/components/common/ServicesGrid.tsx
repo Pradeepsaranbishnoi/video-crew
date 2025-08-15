@@ -25,10 +25,10 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
               <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h3 className="text-[20px] font-bold mb-4 text-white">
+                <h3 className="text-[20px] font-bold mb-4 text-white font-english">
                   {service.title}
                 </h3>
-                <p className="text-[16px] opacity-60 text-white">
+                <p className="text-[16px] opacity-60 text-white font-korean">
                   {service.description}
                 </p>
               </div>

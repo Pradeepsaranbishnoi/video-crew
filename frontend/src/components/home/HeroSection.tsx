@@ -11,13 +11,13 @@ export default function HeroSection() {
     >
       <div className="relative z-10 max-w-[1273px] mx-auto px-4 sm:px-6 w-full mb-12 sm:mb-20 md:mb-[168px]">
         <div className="max-w-4xl">
-          <p className="mb-4 sm:mb-6 text-[16px] sm:text-[20px] md:text-[24px] text-gray-200 leading-relaxed">
+          <p className="mb-4 sm:mb-6 text-[16px] sm:text-[20px] md:text-[24px] text-gray-200 leading-relaxed font-korean">
             "이번엔 정말 제대로 된 업체를 찾고 싶다..." <br className="hidden sm:block" />
             혹시 이런 마음으로 여기까지 오셨나요? <br className="hidden sm:block" />
             축하드립니다!
           </p>
 
-          <h1 className="text-[28px] sm:text-[36px] md:text-[45px] font-bold mb-4 sm:mb-6 text-white leading-snug">
+          <h1 className="text-[28px] sm:text-[36px] md:text-[45px] font-bold mb-4 sm:mb-6 text-white leading-snug font-korean">
             비디오크루가 정답입니다!
           </h1>
 

@@ -33,10 +33,10 @@ export default function About() {
       </div>
       <Dashed src='home-assets/Image.webp'  className="bg-black w-full mt-[-200px]"/>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 text-white text-center mb-0.5">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold mb-2.5">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold mb-2.5 font-english">
           Core Value
         </h2>
-        <p className="text-sm sm:text-base md:text-lg opacity-60 leading-relaxed">
+        <p className="text-sm sm:text-base md:text-lg opacity-60 leading-relaxed font-korean">
           ​비디오크루가 지향하는 핵심가치는 고객중심, 문제해결, 솔직함으로
           <br className="hidden sm:block" />
           항상 진정성 있게 고객을 대하는 것을 목표로 합니다.

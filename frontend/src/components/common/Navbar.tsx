@@ -47,7 +47,7 @@ export default function Header() {
               <Link
                 key={link.to}
                 to={link.to}
-                className="font-medium hover:text-gray-300 transition-colors"
+                className="font-medium hover:text-gray-300 transition-colors font-korean"
               >
                 {link.label}
               </Link>
@@ -71,7 +71,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMenuOpen(false)}
-                className="font-medium hover:text-gray-300 transition-colors"
+                className="font-medium hover:text-gray-300 transition-colors font-korean"
               >
                 {link.label}
               </Link>

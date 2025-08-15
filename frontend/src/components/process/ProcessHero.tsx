@@ -6,14 +6,14 @@ export default function ProcessHero() {
 
           {/* Left Content */}
           <div className="ml-0 mr-0 sm:ml-10 sm:mr-10 lg:ml-21.5 lg:mr-10 space-y-4 sm:space-y-5 lg:space-y-6 text-center sm:text-left lg:text-left">
-            <h1 className="text-[28px] sm:text-[36px] lg:text-[45px] font-bold leading-tight text-white mb-2.5">
+            <h1 className="text-[28px] sm:text-[36px] lg:text-[45px] font-bold leading-tight text-white mb-2.5 font-korean">
               영상제작 프로세스​
             </h1>
-            <p className="text-[14px] sm:text-[16px] lg:text-[20px] text-white opacity-60 leading-relaxed">
+            <p className="text-[14px] sm:text-[16px] lg:text-[20px] text-white opacity-60 leading-relaxed font-korean">
               비디오크루만의 영상제작 프로세스를 통해 고객의 니즈에 부합하는 최적의 콘텐츠를 <br className="hidden sm:block" />
               디자인하여 제공합니다.
             </p>
-            <p className="text-[10px] sm:text-[11px] lg:text-[12px] opacity-60 mt-6 sm:mt-10 lg:mt-20.5 text-white">
+            <p className="text-[10px] sm:text-[11px] lg:text-[12px] opacity-60 mt-6 sm:mt-10 lg:mt-20.5 text-white font-korean">
               *과업의 형태에 따라 프로세스는 변동될 수 있습니다.
             </p>
           </div>

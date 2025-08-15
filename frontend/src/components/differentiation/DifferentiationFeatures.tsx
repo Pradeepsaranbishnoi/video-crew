@@ -57,14 +57,14 @@ function FeatureSection({
         >
           {/* Text Content */}
           <div className={`space-y-8 ${reverse ? "lg:col-start-2" : ""}`}>
-            <div className="text-[165px] font-bold text-white/11 leading-none mb-13">
+            <div className="text-[165px] font-bold text-white/11 leading-none mb-13 font-english">
               {number}
             </div>
             <div className="space-y-4">
-              <h2 className="text-[45px] font-bold text-white leading-tight mb-3">
+              <h2 className="text-[45px] font-bold text-white leading-tight mb-3 font-korean">
                 {title}
               </h2>
-              <p className="text-[#7E7E7E] text-[16px] leading-relaxed max-w-md">
+              <p className="text-[#7E7E7E] text-[16px] leading-relaxed max-w-md font-korean">
                 {description}
               </p>
             </div>

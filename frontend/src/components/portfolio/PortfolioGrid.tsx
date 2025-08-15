@@ -107,23 +107,23 @@ export default function PortfolioGrid() {
     <section className="pt-37.5 pb-30 px-6 z-1">
         <div className="max-w-7xl mx-auto px-6 relative">
             <div className="max-w-7xl mx-auto text-center mb-16">
-                <h2 className="font-semibold uppercase mb-8">
+                <h2 className="font-semibold uppercase mb-8 font-english">
                     Portfolio
                 </h2>
-                <h1 className="text-[64px] font-semibold mb-18.5 leading-18">
+                <h1 className="text-[64px] font-semibold mb-18.5 leading-18 font-english">
                 We Create Beautiful,
                 <br />
                 <span className="text-[#2448FF]">Practical Works</span>
                 </h1>
 
                 <div className="flex flex-wrap justify-center gap-4 mb-12">
-                <button onClick={() => setFilter("all")} className={btnClass("all")}>
+                <button onClick={() => setFilter("all")} className={`${btnClass("all")} font-korean`}>
                     광고 · 홍보 영상 
                 </button>
-                <button onClick={() => setFilter("video")} className={btnClass("video")}>
+                <button onClick={() => setFilter("video")} className={`${btnClass("video")} font-korean`}>
                     이러닝 영상
                 </button>
-                <button onClick={() => setFilter("other")} className={btnClass("other")}>
+                <button onClick={() => setFilter("other")} className={`${btnClass("other")} font-korean`}>
                     기업 행사 영상
                 </button>
                 </div>
@@ -150,8 +150,8 @@ export default function PortfolioGrid() {
                         <Play className="w-9 h-9 text-white ml-0.5" fill="white" />
                     </div>
                     <div>
-                        <h3 className="text-white font-semibold text-[16px]">{item.title}</h3>
-                        <p className="text-gray-300 text-[16px]">{item.subtitle}</p>
+                        <h3 className="text-white font-semibold text-[16px] font-english">{item.title}</h3>
+                        <p className="text-gray-300 text-[16px] font-english">{item.subtitle}</p>
                     </div>
                     </div>
                 </div>
@@ -162,7 +162,7 @@ export default function PortfolioGrid() {
                 <div className="text-center">
                 <button
                     onClick={() => setVisible((v) => v + 5)}
-                    className="bg-[#2448FF] text-white px-14 py-3 rounded-full transition cursor-pointer text-[20px] font-semibold"
+                    className="bg-[#2448FF] text-white px-14 py-3 rounded-full transition cursor-pointer text-[20px] font-semibold font-english"
                 >
                     Load More
                 </button>

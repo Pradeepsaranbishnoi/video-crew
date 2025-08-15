@@ -16,10 +16,10 @@ export default function WorkCulture() {
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-10 sm:mb-14 lg:mb-16 px-2">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold text-white mb-3 sm:mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold text-white mb-3 sm:mb-4 font-english">
             Work Culture
           </h2>
-          <p className="text-gray-400 text-sm sm:text-base md:text-lg leading-relaxed">
+          <p className="text-gray-400 text-sm sm:text-base md:text-lg leading-relaxed font-korean">
             비디오크루의 업무 문화는 애자일 퍼포먼스, 효율성, 그리고 지식 공유를 기반으로 합니다.
           </p>
         </div>
@@ -36,11 +36,11 @@ export default function WorkCulture() {
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300" />
               <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 max-w-[85%]">
-                <h4 className="text-sm sm:text-base text-white opacity-60">결과중심의 유연한 과업 수행</h4>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
-                  ‘Agile’ Performance
+                <h4 className="text-sm sm:text-base text-white opacity-60 font-korean">결과중심의 유연한 과업 수행</h4>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2 font-english">
+                  'Agile' Performance
                 </h3>
-                <p className="text-sm sm:text-base text-white opacity-60">
+                <p className="text-sm sm:text-base text-white opacity-60 font-korean">
                   비디오크루는 결과 중심으로 유연하고​ 빠르게 대응합니다.
                 </p>
               </div>
@@ -57,11 +57,11 @@ export default function WorkCulture() {
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300" />
               <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 max-w-[85%]">
-                <h4 className="text-sm sm:text-base text-white opacity-60">형식보다는 효과에 집중​</h4>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
+                <h4 className="text-sm sm:text-base text-white opacity-60 font-korean">형식보다는 효과에 집중​</h4>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2 font-english">
                   Effectiveness​
                 </h3>
-                <p className="text-sm sm:text-base text-white opacity-60">
+                <p className="text-sm sm:text-base text-white opacity-60 font-korean">
                   비디오크루는 형식에 치중하기보다는​ 실용성과 성과, 효과에 집중합니다.
                 </p>
               </div>
@@ -79,11 +79,11 @@ export default function WorkCulture() {
             />
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300" />
             <div className="absolute bottom-5 sm:bottom-8 left-5 sm:left-8 max-w-[85%]">
-              <h4 className="text-sm sm:text-base text-white opacity-60">콘텐츠의 확산​</h4>
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">
+              <h4 className="text-sm sm:text-base text-white opacity-60 font-korean">콘텐츠의 확산​</h4>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3 font-english">
                 Knowledge Sharing
               </h3>
-              <p className="text-sm sm:text-base text-white opacity-60">
+              <p className="text-sm sm:text-base text-white opacity-60 font-korean">
                 적시적소에 영상 서비스를 제공하는​ 비디오 컨설턴트로의 역할을 수행합니다.
               </p>
             </div>

@@ -60,7 +60,7 @@ export default function DifferentiationHero() {
         
         {/* Top small text */}
         <div className="mb-3">
-          <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 tracking-wide">
+          <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 tracking-wide font-korean">
             왜 비디오크루를 선택해야 할까요? ​
           </p>
         </div>
@@ -69,7 +69,7 @@ export default function DifferentiationHero() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-10 lg:mb-14">
           {/* Left - Main Title */}
           <div>
-            <h1 className="text-[28px] sm:text-[35px] lg:text-[45px] font-bold leading-tight text-white">
+            <h1 className="text-[28px] sm:text-[35px] lg:text-[45px] font-bold leading-tight text-white font-korean">
               비디오크루만의 특별함​
             </h1>
           </div>
@@ -77,7 +77,7 @@ export default function DifferentiationHero() {
           {/* Right - Description */}
           <div className="flex items-start lg:pt-4">
             <div className="space-y-4">
-              <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 leading-relaxed">
+              <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 leading-relaxed font-korean">
                 컨설턴트가 스토리를 입히고, 전문 디자이너와 촬영감독, PD가 1:1 맞춤 설계된 <br className="hidden sm:block" />
                 영상을 제공하며, 차별화된 스토리와 다양한 선택지를 제시합니다.
               </p>
@@ -128,10 +128,10 @@ export default function DifferentiationHero() {
               key={index}
               className="bg-[#0A0A0A] p-6 sm:p-8 lg:p-10.5 border border-white/10"
             >
-              <h3 className="text-white font-bold text-[18px] sm:text-[19px] lg:text-[20px] mb-3 leading-tight whitespace-pre-line">
+              <h3 className="text-white font-bold text-[18px] sm:text-[19px] lg:text-[20px] mb-3 leading-tight whitespace-pre-line font-korean">
                 {concern.title}
               </h3>
-              <p className="text-[#7E7E7E] text-[14px] sm:text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line">
+              <p className="text-[#7E7E7E] text-[14px] sm:text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line font-korean">
                 {concern.description}
               </p>
             </div>

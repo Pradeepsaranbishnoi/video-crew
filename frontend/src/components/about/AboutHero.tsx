@@ -16,10 +16,10 @@ export default function AboutHero() {
         <div className="grid lg:grid-cols-2 gap-8 mb-10 md:mb-15 items-center">
           {/* Left Side */}
           <div>
-            <p className="text-sm md:text-base text-white opacity-60 mb-4 md:mb-[22px] tracking-wider uppercase font-medium">
+            <p className="text-sm md:text-base text-white opacity-60 mb-4 md:mb-[22px] tracking-wider uppercase font-medium font-english">
               Who we are, Video Crew
             </p>
-            <h1 className="text-2xl sm:text-3xl md:text-[45px] font-bold leading-tight text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-[45px] font-bold leading-tight text-white font-korean">
               스토리로 말하는 영상 콘텐츠, <br className="hidden sm:block" />
               시선을 사로잡는 영상, <br className="hidden sm:block" />
               더 이상 고민하지 마세요!
@@ -29,7 +29,7 @@ export default function AboutHero() {
           {/* Right Side */}
           <div className="flex items-center justify-center">
             <div className="space-y-4 sm:space-y-6">
-              <p className="text-sm sm:text-base md:text-[16px] text-white opacity-60 leading-relaxed">
+              <p className="text-sm sm:text-base md:text-[16px] text-white opacity-60 leading-relaxed font-korean">
                 우리는 영상이 단순한 기록을 넘어, 감동을 전달하고, 생각을 움직이며,
                 변화를 이끌어내는 가장 강력한 매체라고 믿습니다. 비디오크루는 모든
                 프로젝트에 진정성을 담아, 고객의 메시지가 세상에 가장 효과적으로
@@ -57,10 +57,10 @@ export default function AboutHero() {
             {/* Overlay Text */}
             <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8 right-4 sm:right-6 md:right-8">
               <div className="max-w-xl">
-                <h2 className="text-lg sm:text-xl md:text-3xl font-bold text-white mb-2 sm:mb-4">
+                <h2 className="text-lg sm:text-xl md:text-3xl font-bold text-white mb-2 sm:mb-4 font-korean">
                   회사소개 <br className="hidden sm:block" /> Video Crew
                 </h2>
-                <p className="text-white opacity-35 text-sm sm:text-base md:text-[20px] leading-relaxed">
+                <p className="text-white opacity-35 text-sm sm:text-base md:text-[20px] leading-relaxed font-english">
                   Video Consulting Firm
                 </p>
 

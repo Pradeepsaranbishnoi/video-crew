@@ -40,17 +40,17 @@ export default function AboutSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-[66px] pb-12 sm:pb-[80px] relative z-10 text-white">
         <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-start text-center lg:text-left">
           <div>
-            <p className="text-[14px] sm:text-[16px] mb-4 sm:mb-8 tracking-wider uppercase font-medium">
+            <p className="text-[14px] sm:text-[16px] mb-4 sm:mb-8 tracking-wider uppercase font-medium font-korean">
               비디오크루의 차별점
             </p>
-            <h2 className="text-[28px] sm:text-[36px] md:text-[45px] font-bold leading-tight">
+            <h2 className="text-[28px] sm:text-[36px] md:text-[45px] font-bold leading-tight font-korean">
               영상 제작,
               <br className="hidden sm:block" />
               어떻게 하고 계신가요?
             </h2>
           </div>
           <div className="flex items-center lg:items-start lg:pt-16">
-            <p className="text-[14px] sm:text-[16px] leading-relaxed">
+            <p className="text-[14px] sm:text-[16px] leading-relaxed font-korean">
               비디오크루는 단순한 영상 제작을 넘어, 강력한 스토리텔링과
               독창적인 시각적 표현으로 고객의 메시지에 생명력을 불어넣는
               비디오 콘텐츠 전문 그룹입니다. 기획부터 촬영, 편집, 그리고 최종

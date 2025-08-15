@@ -17,10 +17,10 @@ export default function Footer() {
         </Link>
 
         {/* Description */}
-        <p className="mb-2 text-[14px] sm:text-[15px] leading-relaxed">
+        <p className="mb-2 text-[14px] sm:text-[15px] leading-relaxed font-korean">
           <strong>비디오크루(Video Crew)</strong>는 (주)러닝크루 컨설팅그룹의 영상 전문 브랜드입니다.{" "}
           <Link
-            className="underline hover:text-white transition"
+            className="underline hover:text-white transition font-korean"
             to="https://www.learning-crew.com/"
             target="_blank"
           >
@@ -29,19 +29,19 @@ export default function Footer() {
         </p>
 
         {/* Address */}
-        <p className="mb-4 text-[14px] sm:text-[15px] leading-relaxed">
+        <p className="mb-4 text-[14px] sm:text-[15px] leading-relaxed font-korean">
           주소. 서울 성동구 연무장5가길 7 (성수동2가, 성수역 현대테라스타워) 1001호-1003호 |
           이메일 |{" "}
           <a
             href="mailto:info@learning-crew.com"
-            className="underline hover:text-white transition"
+            className="underline hover:text-white transition font-korean"
           >
             info@learning-crew.com
           </a>
         </p>
 
         {/* Copyright */}
-        <p className="text-[13px] sm:text-[15px]">
+        <p className="text-[13px] sm:text-[15px] font-korean">
           © {year}. Video Crew all rights reserved.
         </p>
       </div>

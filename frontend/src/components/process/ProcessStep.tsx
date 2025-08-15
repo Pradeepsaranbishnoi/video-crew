@@ -35,7 +35,7 @@ export default function ProcessStep({
       <div className="max-w-7xl mx-auto px-6 relative">
         {/* Large Background Number */}
         <div
-            className={`absolute text-[147px] font-bold text-white leading-none select-none opacity-20 z-0 ${
+            className={`absolute text-[147px] font-bold text-white leading-none select-none opacity-20 z-0 font-english ${
             reverse ? "top-[-135px] right-0 md:right-8" : "top-[-135px] left-0 md:left-8"
             }`}
         >
@@ -61,14 +61,14 @@ export default function ProcessStep({
                 {/* Text Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
                   <div className="space-y-3">
-                    <h3 className="text-[20px] font-bold text-white mb-1.75">{title}</h3>
-                    <p className="text-[20px] font-bold text-white">{subtitle}</p>
-                    <p className="text-[16px] text-white/60 leading-relaxed">
+                    <h3 className="text-[20px] font-bold text-white mb-1.75 font-korean">{title}</h3>
+                    <p className="text-[20px] font-bold text-white font-english">{subtitle}</p>
+                    <p className="text-[16px] text-white/60 leading-relaxed font-korean">
                       {isExpanded && fullDescription ? fullDescription : description}
                       {showSeeMore && (
                       <button
                         onClick={toggleExpanded}
-                        className="text-white text-sm transition-colors cursor-pointer ml-2 text-bold"
+                        className="text-white text-sm transition-colors cursor-pointer ml-2 text-bold font-english"
                       >
                         {isExpanded ? "See less" : "See more"}
                       </button>

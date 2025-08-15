@@ -18,10 +18,10 @@ export default function ContactHero() {
           {/* Right - Content */}
           <div className="space-y-8 px-4 md:px-6 lg:px-0">
             <div className="mb-8 lg:mb-13">
-              <h1 className="text-[28px] md:text-[36px] lg:text-[45px] font-bold text-white mb-3">
+              <h1 className="text-[28px] md:text-[36px] lg:text-[45px] font-bold text-white mb-3 font-korean">
                 문의하기
               </h1>
-              <p className="text-[14px] md:text-[15px] lg:text-[16px] text-white opacity-60 leading-relaxed">
+              <p className="text-[14px] md:text-[15px] lg:text-[16px] text-white opacity-60 leading-relaxed font-korean">
                 비디오크루 전문팀이 고객님 요청에 맞는 최적의 솔루션을 제안해 드립니다.
                 <br />최 상담부터 제작까지 고객 맞춤형 영상을 제공해 드리며 언제든지 문의
                 <br />
@@ -31,29 +31,29 @@ export default function ContactHero() {
 
             {/* Contact Information */}
             <div className="space-y-6">
-              <h2 className="text-[28px] md:text-[36px] lg:text-[45px] font-bold text-white">
+              <h2 className="text-[28px] md:text-[36px] lg:text-[45px] font-bold text-white font-korean">
                 정보
               </h2>
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-xs md:text-sm font-medium text-gray-400 mb-3 md:mb-6">
+                  <h3 className="text-xs md:text-sm font-medium text-gray-400 mb-3 md:mb-6 font-english">
                     ADDRESS
                   </h3>
-                  <p className="text-gray-300 text-[14px] md:text-[15px] lg:text-[16px] leading-relaxed mb-4.5">
+                  <p className="text-gray-300 text-[14px] md:text-[15px] lg:text-[16px] leading-relaxed mb-4.5 font-korean">
                     서울특별시 강남구 테헤란로 518 섬유센터빌딩 7층, 서울특별시 강남구 테헤란로
                     <br />
-                    Daerim-dong 7-ga, Yeongdeungpo-gu Seoul
+                    <span className="font-english">Daerim-dong 7-ga, Yeongdeungpo-gu Seoul</span>
                     <br />
-                    Taeik Tower 6 WJHT-1003
+                    <span className="font-english">Taeik Tower 6 WJHT-1003</span>
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-xs md:text-sm font-medium text-gray-400 mb-3 md:mb-6">
+                  <h3 className="text-xs md:text-sm font-medium text-gray-400 mb-3 md:mb-6 font-english">
                     CALL US
                   </h3>
-                  <p className="text-gray-300 text-[15px] md:text-lg font-medium">
+                  <p className="text-gray-300 text-[15px] md:text-lg font-medium font-english">
                     010-38-9947
                   </p>
                 </div>

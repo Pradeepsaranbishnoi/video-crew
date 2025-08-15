@@ -27,7 +27,7 @@ export default function Counter() {
       <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
         {stats.map((stat, i) => (
           <div key={i} className="relative">
-            <div className="text-[36px] sm:text-[54px] font-bold text-white relative inline-block">
+            <div className="text-[36px] sm:text-[54px] font-bold text-white relative inline-block font-english">
               {inView && <CountUp end={stat.target} duration={2} />}
               {/* Mobile: inline suffix, Desktop: absolute suffix */}
               <span
@@ -35,12 +35,13 @@ export default function Counter() {
                   sm:absolute sm:right-[-25px] sm:top-0
                   text-[20px] sm:text-[30px]
                   ml-1 sm:ml-0
+                  font-english
                 "
               >
                 {stat.suffix}
               </span>
             </div>
-            <div className="text-[16px] sm:text-[24px] text-gray-400 mt-1">
+            <div className="text-[16px] sm:text-[24px] text-gray-400 mt-1 font-korean">
               {stat.label}
             </div>
           </div>

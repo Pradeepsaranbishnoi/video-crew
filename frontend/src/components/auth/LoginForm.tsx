@@ -61,21 +61,21 @@ export default function LoginForm() {
             <div className="flex items-center justify-center space-x-1 mb-4">
               <img src="/logo.svg" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">관리자 로그인</h1>
-            <p className="text-gray-400">관리자 계정으로 로그인하세요</p>
+            <h1 className="text-2xl font-bold text-white mb-2 font-korean">관리자 로그인</h1>
+            <p className="text-gray-400 font-korean">관리자 계정으로 로그인하세요</p>
           </div>
 
           {/* 에러 메세지 */}
           {error && (
             <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg">
-              <p className="text-red-300 text-sm">{error}</p>
+              <p className="text-red-300 text-sm font-korean">{error}</p>
             </div>
           )}
 
           {/* 로그인 폼 */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2 font-korean">
                 이메일
               </label>
               <input
@@ -91,7 +91,7 @@ export default function LoginForm() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2 font-korean">
                 비밀번호
               </label>
               <div className="relative">
@@ -118,7 +118,7 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 py-3 text-white font-medium rounded-lg transition-colors cursor-pointer"
+              className="w-full bg-blue-600 hover:bg-blue-700 py-3 text-white font-medium rounded-lg transition-colors cursor-pointer font-korean"
             >
               {isLoading ? "로그인 중..." : "로그인"}
             </button>
@@ -126,9 +126,9 @@ export default function LoginForm() {
 
           {/* 데모 계정 */}
           <div className="mt-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg">
-            <p className="text-blue-300 text-sm font-medium mb-2">데모 계정:</p>
-            <p className="text-blue-200 text-xs">이메일: admin@videocrew.com</p>
-            <p className="text-blue-200 text-xs">비밀번호: Test@123</p>
+            <p className="text-blue-300 text-sm font-medium mb-2 font-korean">데모 계정:</p>
+            <p className="text-blue-200 text-xs font-english">이메일: admin@videocrew.com</p>
+            <p className="text-blue-200 text-xs font-english">비밀번호: Test@123</p>
           </div>
         </div>
       </div>

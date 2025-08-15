@@ -28,7 +28,7 @@ export default function ClientsSection({
         {showHeading && (
           <div className="mb-12 sm:mb-28">
             <h2
-              className="text-[24px] sm:text-[32px] md:text-[45px] font-bold mb-4 leading-snug sm:leading-tight text-white"
+              className="text-[24px] sm:text-[32px] md:text-[45px] font-bold mb-4 leading-snug sm:leading-tight text-white font-korean"
               dangerouslySetInnerHTML={{ __html: headingText }}
             />
           </div>
