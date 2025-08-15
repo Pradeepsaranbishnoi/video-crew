@@ -2,16 +2,21 @@
   "name": "videocrew-backend",
   "version": "1.0.0",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
-    "start": "tsc && node dist/server.js",
+    "start": "node dist/server.js",
+    "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "create-admin": "ts-node src/scripts/createAdmin.ts",
     "test-db": "ts-node src/scripts/testConnection.ts",
     "add-sample-portfolio": "ts-node src/scripts/addSamplePortfolio.ts",
     "test-media": "ts-node src/scripts/testMediaUpload.ts",
-    "build": "tsc",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
