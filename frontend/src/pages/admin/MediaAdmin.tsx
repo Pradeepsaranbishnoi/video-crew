@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Upload, ImageIcon, Video, Trash2, Search, Filter, Download, Eye, Copy } from "lucide-react";
-import LazyImage from "../../components/common/LazyImage";
+import { Upload, ImageIcon, Video, Trash2, Search, Filter, Download, Eye } from "lucide-react";
 import Seo from "../../components/common/Seo";
 import { apiService } from "../../services/api";
 

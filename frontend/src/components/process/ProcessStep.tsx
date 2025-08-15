@@ -128,7 +128,7 @@ export default function ProcessStep({
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-            <LazyImage src="/Process/even.png" className="w-full"/>
+            <LazyImage src="/Process/even.png" className="w-full" alt="Process connection line"/>
         </motion.div>
       )}
       {(number === "01" || number === "03" || number === "05") && (
@@ -139,7 +139,7 @@ export default function ProcessStep({
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
         >
-            <LazyImage src="/Process/odd.png" className="w-full"/>
+            <LazyImage src="/Process/odd.png" className="w-full" alt="Process connection line"/>
         </motion.div>
       )}
     </motion.div>

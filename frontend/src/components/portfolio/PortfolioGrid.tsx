@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import { Play } from "lucide-react"
 import VideoModal from "./VideoModal"
 import LazyImage from "../common/LazyImage"
-import { motion } from "framer-motion"
 import AnimatedText from "../common/AnimatedText"
-import { apiService, type PortfolioItem } from "../../services/api"
+import { apiService } from "../../services/api"
 
 interface DisplayPortfolioItem {
   id: string
@@ -21,15 +21,12 @@ export default function PortfolioGrid() {
   const [visible, setVisible] = useState(5)
   const [selected, setSelected] = useState<DisplayPortfolioItem | null>(null)
   const [portfolioItems, setPortfolioItems] = useState<DisplayPortfolioItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
   const [categories, setCategories] = useState<string[]>([])
 
   // Fetch portfolio items from API
   useEffect(() => {
     const fetchPortfolioItems = async () => {
       try {
-        setLoading(true)
         const items = await apiService.getPortfolioItems()
         
         // Transform API data to display format
@@ -50,7 +47,6 @@ export default function PortfolioGrid() {
         setCategories(uniqueCategories)
       } catch (err) {
         console.error('Failed to fetch portfolio items:', err)
-        setError("Failed to load portfolio items")
         
         // Fallback to static data if API fails
         setPortfolioItems([
@@ -100,8 +96,6 @@ export default function PortfolioGrid() {
             description: "혁신적인 기술을 소개하는 다큐멘터리 영상",
           }
         ])
-      } finally {
-        setLoading(false)
       }
     }
 

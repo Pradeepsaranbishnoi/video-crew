@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import LazyImage from "../common/LazyImage";
 import AnimatedText from "../common/AnimatedText";
 
 export default function HeroSection() {

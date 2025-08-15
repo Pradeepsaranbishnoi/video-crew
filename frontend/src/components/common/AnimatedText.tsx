@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { motion, type Variants } from "framer-motion"
+import type { ReactNode } from "react"
 
 interface AnimatedTextProps {
   children: ReactNode;
@@ -20,25 +20,26 @@ export default function AnimatedText({
 }: AnimatedTextProps) {
   const words = typeof children === 'string' ? children.split(' ') : [children];
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        delayChildren: delay,
-        staggerChildren: stagger
+        duration: 0.6,
+        ease: "easeOut",
+        staggerChildren: 0.1
       }
     }
-  };
+  }
 
-  const wordVariants = {
+  const wordVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        ease: "easeOut"
       }
     }
   };

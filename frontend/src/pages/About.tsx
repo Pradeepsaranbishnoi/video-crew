@@ -3,7 +3,6 @@ import WorkCulture from '../components/about/WorkCulture';
 import ClientsSection from '../components/common/ClientsSection';
 import Dashed from '../components/common/Dashed';
 import ServicesGrid from '../components/common/ServicesGrid.tsx';
-import LazyImage from '../components/common/LazyImage';
 import AnimatedSection from '../components/common/AnimatedSection';
 import AnimatedText from '../components/common/AnimatedText';
 import Seo from '../components/common/Seo';
