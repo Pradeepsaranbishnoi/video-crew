@@ -33,8 +33,10 @@ export default function ProcessStep({
   };
 
   return (
-    <motion.div 
-      className={`relative ${className}`}
+    <motion.div
+      className={`relative z-10 ${className} ${
+      reverse ? "reverse_mt" : "normal_mt"
+    }`}
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
@@ -63,7 +65,7 @@ export default function ProcessStep({
           <div className={`${reverse ? "lg:col-start-2" : ""}`}>
             <div className="relative border-[1px] border-solid [border-image:linear-gradient(to_bottom,#2E2E2E,#2E2E2E_40%,#ffffff_100%)_1] [border-image-slice:1]">
               {/* Image */}
-              <div className="relative h-64 lg:h-106 overflow-hidden bg-gray-900 z-1">
+              <div className="relative h-80 lg:h-106 overflow-hidden bg-gray-900 z-1">
                 <LazyImage
                   src={image || "/placeholder.svg"}
                   alt={`${title} - ${subtitle}`}
@@ -122,7 +124,7 @@ export default function ProcessStep({
       {/* Connecting Dotted Line */}
       {(number === "02" || number === "04") && (
         <motion.div 
-          className="absolute bottom-[-100px] left-1/2 transform -translate-x-1/2 border-gray-600"
+          className="absolute bottom-[-100px] left-1/2 transform -translate-x-1/2 border-gray-600 hideinmobile"
           initial={{ opacity: 0, scaleX: 0 }}
           whileInView={{ opacity: 1, scaleX: 1 }}
           viewport={{ once: true }}
@@ -133,7 +135,7 @@ export default function ProcessStep({
       )}
       {(number === "01" || number === "03" || number === "05") && (
         <motion.div 
-          className="absolute bottom-[50px] left-1/2 transform -translate-x-1/2 border-gray-600"
+          className="absolute bottom-[50px] left-1/2 transform -translate-x-1/2 border-gray-600 hideinmobile"
           initial={{ opacity: 0, scaleX: 0 }}
           whileInView={{ opacity: 1, scaleX: 1 }}
           viewport={{ once: true }}

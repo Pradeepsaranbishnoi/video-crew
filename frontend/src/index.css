@@ -98,3 +98,12 @@ body {
 .animate-scroll-right {
   animation: scroll-right 20s linear infinite;
 }
+
+@media only screen and (max-width:1000px){
+  .reverse_mt,.normal_mt{
+    margin-top: 150px;
+  }
+  .hideinmobile{
+    display: none;
+  }
+}
