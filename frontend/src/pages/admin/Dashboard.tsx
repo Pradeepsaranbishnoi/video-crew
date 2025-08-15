@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FolderOpen, MessageSquare, Upload, TrendingUp, Users, Eye, Calendar } from "lucide-react";
 
 interface DashboardStats {
@@ -18,7 +18,7 @@ export default function Dashboard() {
     monthlyViews: 0,
   });
 
-  const [recentActivities, setRecentActivities] = useState([
+  const [recentActivities] = useState([
     {
       id: 1,
       type: "contact",
