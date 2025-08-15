@@ -85,7 +85,7 @@ export default function LoginForm() {
                 value={formData.email}
                 onChange={handleInputChange}
                 className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
-                placeholder="admin@videocrew.com"
+                placeholder="사용자 이름을 입력하세요"
                 required
               />
             </div>
