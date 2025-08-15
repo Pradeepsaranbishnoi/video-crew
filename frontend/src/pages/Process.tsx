@@ -1,5 +1,7 @@
 import ProcessHero from "../components/process/ProcessHero";
 import ProcessStep from "../components/process/ProcessStep";
+import LazyImage from "../components/common/LazyImage";
+import Seo from "../components/common/Seo";
 
 export default function Process(){
     const processSteps = [
@@ -84,6 +86,7 @@ export default function Process(){
   ]
     return(
         <>
+            <Seo title="Process" description="비디오크루 영상 제작 프로세스 – 상담, 기획, 촬영, 편집까지 원스톱" />
             <ProcessHero/>
             <section className="py-20 pb-27.5 relative mt-[77px]">
                 <img src="/Process/right.png" className="absolute right-0 top-[-20%]"/>

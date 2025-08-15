@@ -1,4 +1,6 @@
 
+import LazyImage from "../common/LazyImage";
+
 interface FeatureProps {
   number: string;
   title: string;
@@ -73,11 +75,11 @@ function FeatureSection({
           {/* Image */}
           <div className={`relative ${reverse ? "lg:col-start-1" : ""}`}>
             <div className="relative h-[374px] overflow-hidden">
-              <img
-                src={image}
-                alt={title}
-                className="object-cover h-full"
-              />
+                          <LazyImage
+              src={image}
+              alt={title}
+              className="object-cover h-full"
+            />
             </div>
           </div>
         </div>

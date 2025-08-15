@@ -1,5 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
+import { motion } from "framer-motion";
+import AnimatedText from "../common/AnimatedText";
 import { ChevronDown } from "lucide-react";
+import { apiService } from "../../services/api";
 
 const contentTypes = [
   { value: "", label: "러닝 타임 (분량)" },
@@ -80,28 +83,57 @@ export default function ContactForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Prepare the contact inquiry data
+      const inquiry = {
+        name: formData.name,
+        email: formData.email,
+        subject: `Video Production Inquiry - ${formData.purpose || 'General'}`,
+        message: `
+Name: ${formData.name}
+Email: ${formData.email}
+Contact: ${formData.contact}
+Company: ${formData.company}
+Video Work: ${formData.videoWork}
+Delivery Date: ${formData.deliveryDate}
+Content Type: ${formData.contentType}
+Budget: ${formData.budget}
+Purpose: ${formData.purpose}
+Upload Platform: ${formData.uploadPlatform}
+Reference Video: ${formData.referenceVideo}
+Website Links: ${formData.websiteLinks}
+Message: ${formData.message}
+        `.trim()
+      };
 
-    console.log("Form submitted:", formData);
-    alert("문의가 성공적으로 전송되었습니다!");
+      // Submit to API
+      await apiService.submitContactInquiry(inquiry);
+      
+      alert("문의가 성공적으로 전송되었습니다!");
 
-    setFormData({
-      name: "",
-      email: "",
-      contact: "",
-      company: "",
-      videoWork: "",
-      deliveryDate: "",
-      contentType: "",
-      budget: "",
-      purpose: "",
-      uploadPlatform: "",
-      referenceVideo: "",
-      websiteLinks: "",
-      message: "",
-      privacyAgreed: false,
-    });
-    setIsSubmitting(false);
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        contact: "",
+        company: "",
+        videoWork: "",
+        deliveryDate: "",
+        contentType: "",
+        budget: "",
+        purpose: "",
+        uploadPlatform: "",
+        referenceVideo: "",
+        websiteLinks: "",
+        message: "",
+        privacyAgreed: false,
+      });
+    } catch (error) {
+      console.error('Failed to submit contact form:', error);
+      alert("문의 전송에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function Dropdown({
@@ -133,11 +165,23 @@ export default function ContactForm() {
   return (
     <section className="pt-16 sm:pt-20 lg:pt-21 pb-16 sm:pb-20 lg:pb-24.5 bg-black px-4 sm:px-6 lg:px-0">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-center text-[26px] sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-10 sm:mb-14 lg:mb-16 font-english">
+        <AnimatedText
+          as="h2"
+          className="text-center text-[26px] sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-10 sm:mb-14 lg:mb-16 font-english"
+          delay={0.2}
+          stagger={0.05}
+        >
           Contact Us
-        </h2>
+        </AnimatedText>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+                  <motion.form 
+            onSubmit={handleSubmit} 
+            className="space-y-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             <div className="space-y-5 sm:space-y-6">
               {[
@@ -220,15 +264,17 @@ export default function ContactForm() {
           </div>
 
           <div className="text-center pt-10 sm:pt-12 lg:pt-13">
-            <button
+            <motion.button
               type="submit"
               disabled={isSubmitting || !formData.privacyAgreed}
               className="bg-[#2448FF] hover:bg-blue-700 disabled:bg-gray-600 px-8 sm:px-12 lg:px-22.5 py-2.5 rounded-full text-sm sm:text-base lg:text-lg font-medium transition-all duration-300 hover:scale-105 disabled:cursor-no-drop disabled:hover:scale-100 cursor-pointer font-korean"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
             >
               {isSubmitting ? "전송 중..." : "제출하기"}
-            </button>
+            </motion.button>
           </div>
-        </form>
+        </motion.form>
       </div>
     </section>
   );

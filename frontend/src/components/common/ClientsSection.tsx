@@ -1,3 +1,5 @@
+import LazyImage from "./LazyImage";
+
 export default function ClientsSection({
   clients = [],
   showHeading = false,
@@ -44,7 +46,7 @@ export default function ClientsSection({
             key={index}
             className="flex-shrink-0 opacity-40 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
           >
-            <img
+            <LazyImage
               src={client.img}
               alt={client.name}
               className="w-auto h-[16px] sm:h-[18px] md:h-[22px] object-contain"

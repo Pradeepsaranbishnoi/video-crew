@@ -1,4 +1,7 @@
 import ServicesGrid from "../common/ServicesGrid";
+import LazyImage from "../common/LazyImage";
+import AnimatedSection from "../common/AnimatedSection";
+import AnimatedText from "../common/AnimatedText";
 
 export default function AboutSection() {
   const HomeServices = [
@@ -25,12 +28,12 @@ export default function AboutSection() {
   return (
     <section className="relative overflow-hidden mb-[-50px] md:mb-[-100px] z-[1] bg-black">
       {/* Background Patterns */}
-      <img
+      <LazyImage
         src="/home-assets/Pattern.webp"
         className="absolute h-[300px] sm:h-full object-contain left-[-50%] sm:left-[-38%] bottom-[-10%] sm:bottom-[-23%] rotate-[16deg] opacity-30 sm:opacity-100"
         alt="pattern"
       />
-      <img
+      <LazyImage
         src="/home-assets/Pattern.webp"
         className="absolute top-[-20px] sm:top-[-50px] right-[-50%] sm:right-[-38%] h-[300px] sm:h-full object-contain rotate-[-154deg] opacity-30 sm:opacity-100"
         alt="pattern"
@@ -39,25 +42,44 @@ export default function AboutSection() {
       {/* Intro Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-[66px] pb-12 sm:pb-[80px] relative z-10 text-white">
         <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-start text-center lg:text-left">
-          <div>
-            <p className="text-[14px] sm:text-[16px] mb-4 sm:mb-8 tracking-wider uppercase font-medium font-korean">
-              비디오크루의 차별점
-            </p>
-            <h2 className="text-[28px] sm:text-[36px] md:text-[45px] font-bold leading-tight font-korean">
-              영상 제작,
-              <br className="hidden sm:block" />
-              어떻게 하고 계신가요?
-            </h2>
-          </div>
-          <div className="flex items-center lg:items-start lg:pt-16">
-            <p className="text-[14px] sm:text-[16px] leading-relaxed font-korean">
-              비디오크루는 단순한 영상 제작을 넘어, 강력한 스토리텔링과
-              독창적인 시각적 표현으로 고객의 메시지에 생명력을 불어넣는
-              비디오 콘텐츠 전문 그룹입니다. 기획부터 촬영, 편집, 그리고 최종
-              결과물에 이르기까지, 각 분야의 전문가들이 고객의 비전을 완성도
-              높은 영상으로 구현합니다.
-            </p>
-          </div>
+          <AnimatedSection delay={0.2} direction="left">
+            <div>
+              <AnimatedText
+                as="p"
+                className="text-[14px] sm:text-[16px] mb-4 sm:mb-8 tracking-wider uppercase font-medium font-korean"
+                delay={0.3}
+                stagger={0.05}
+              >
+                비디오크루의 차별점
+              </AnimatedText>
+              <AnimatedText
+                as="h2"
+                className="text-[28px] sm:text-[36px] md:text-[45px] font-bold leading-tight font-korean"
+                delay={0.4}
+                stagger={0.05}
+              >
+                영상 제작,
+                <br className="hidden sm:block" />
+                어떻게 하고 계신가요?
+              </AnimatedText>
+            </div>
+          </AnimatedSection>
+          <AnimatedSection delay={0.4} direction="right">
+            <div className="flex items-center lg:items-start lg:pt-16">
+              <AnimatedText
+                as="p"
+                className="text-[14px] sm:text-[16px] leading-relaxed font-korean"
+                delay={0.5}
+                stagger={0.03}
+              >
+                비디오크루는 단순한 영상 제작을 넘어, 강력한 스토리텔링과
+                독창적인 시각적 표현으로 고객의 메시지에 생명력을 불어넣는
+                비디오 콘텐츠 전문 그룹입니다. 기획부터 촬영, 편집, 그리고 최종
+                결과물에 이르기까지, 각 분야의 전문가들이 고객의 비전을 완성도
+                높은 영상으로 구현합니다.
+              </AnimatedText>
+            </div>
+          </AnimatedSection>
         </div>
       </div>
 

@@ -1,80 +1,168 @@
 import { Router, Request, Response } from 'express';
+import { body, param, validationResult } from 'express-validator';
 import { protect } from '../middleware/auth';
-import PortfolioItem from '../models/PortfolioItem';
+import { DatabaseService } from '../services/database';
+import { PortfolioRequest, ReorderRequest } from '../types';
 
 const router = Router();
 
-// Public - get all
+// Public - get all portfolio items
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const items = await PortfolioItem.find().sort({ display_order: 1, createdAt: -1 });
+    const items = await DatabaseService.getAllPortfolioItems();
     res.json({ success: true, data: items });
   } catch (err: any) {
+    console.error('Get portfolio items error:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Public - get single
-router.get('/:id', async (req: Request, res: Response) => {
+// Public - get single portfolio item
+router.get('/:id', [
+  param('id').isMongoId().withMessage('Valid MongoDB ID is required')
+], async (req: Request, res: Response) => {
   try {
-    const item = await PortfolioItem.findById(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: 'Not found' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const id = req.params.id;
+    const item = await DatabaseService.getPortfolioItemById(id);
+    
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Portfolio item not found' });
+    }
+    
     res.json({ success: true, data: item });
   } catch (err: any) {
+    console.error('Get portfolio item error:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Create (auth)
-router.post('/', protect, async (req: Request, res: Response) => {
+// Create portfolio item (auth required)
+router.post('/', protect, [
+  body('title').trim().isLength({ min: 1 }).withMessage('Title is required'),
+  body('category').trim().isLength({ min: 1 }).withMessage('Category is required'),
+  body('thumbnail_url').isURL().withMessage('Valid thumbnail URL is required'),
+  body('video_url').isURL().withMessage('Valid video URL is required'),
+  body('client').optional().trim(),
+  body('description').optional().trim(),
+  body('featured').optional().isBoolean(),
+  body('display_order').optional().isInt({ min: 0 })
+], async (req: Request, res: Response) => {
   try {
-    const payload = req.body;
-    const item = new PortfolioItem(payload);
-    await item.save();
-    res.json({ success: true, data: item });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const portfolioData: PortfolioRequest = req.body;
+    const item = await DatabaseService.createPortfolioItem(portfolioData);
+    
+    res.status(201).json({ success: true, data: item });
   } catch (err: any) {
+    console.error('Create portfolio item error:', err);
     res.status(400).json({ success: false, message: err.message });
   }
 });
 
-// Update (auth)
-router.put('/:id', protect, async (req: Request, res: Response) => {
+// Update portfolio item (auth required)
+router.put('/:id', protect, [
+  param('id').isMongoId().withMessage('Valid MongoDB ID is required'),
+  body('title').optional().trim().isLength({ min: 1 }).withMessage('Title cannot be empty'),
+  body('category').optional().trim().isLength({ min: 1 }).withMessage('Category cannot be empty'),
+  body('thumbnail_url').optional().isURL().withMessage('Valid thumbnail URL is required'),
+  body('video_url').optional().isURL().withMessage('Valid video URL is required'),
+  body('client').optional().trim(),
+  body('description').optional().trim(),
+  body('featured').optional().isBoolean(),
+  body('display_order').optional().isInt({ min: 0 })
+], async (req: Request, res: Response) => {
   try {
-    const item = await PortfolioItem.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!item) return res.status(404).json({ success: false, message: 'Not found' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const id = req.params.id;
+    const updateData = req.body;
+    
+    const item = await DatabaseService.updatePortfolioItem(id, updateData);
+    
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Portfolio item not found' });
+    }
+    
     res.json({ success: true, data: item });
   } catch (err: any) {
+    console.error('Update portfolio item error:', err);
     res.status(400).json({ success: false, message: err.message });
   }
 });
 
-// Delete (auth)
-router.delete('/:id', protect, async (req: Request, res: Response) => {
+// Delete portfolio item (auth required)
+router.delete('/:id', protect, [
+  param('id').isMongoId().withMessage('Valid MongoDB ID is required')
+], async (req: Request, res: Response) => {
   try {
-    const item = await PortfolioItem.findByIdAndDelete(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: 'Not found' });
-    res.json({ success: true, message: 'Deleted' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const id = req.params.id;
+    const deleted = await DatabaseService.deletePortfolioItem(id);
+    
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Portfolio item not found' });
+    }
+    
+    res.json({ success: true, message: 'Portfolio item deleted successfully' });
   } catch (err: any) {
+    console.error('Delete portfolio item error:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Reorder - expects { order: ["id1", "id2", ...] }
-router.put('/reorder/positions', protect, async (req: Request, res: Response) => {
+// Reorder portfolio items (auth required)
+router.put('/reorder/positions', protect, [
+  body('order').isArray({ min: 1 }).withMessage('Order array is required'),
+  body('order.*').isMongoId().withMessage('All order items must be valid MongoDB IDs')
+], async (req: Request, res: Response) => {
   try {
-    const { order } = req.body;
-    if (!Array.isArray(order)) return res.status(400).json({ success: false, message: 'Order array required' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
 
-    const bulkOps = order.map((id: string, idx: number) => ({
-      updateOne: {
-        filter: { _id: id },
-        update: { display_order: idx }
-      }
-    }));
-
-    if (bulkOps.length) await PortfolioItem.bulkWrite(bulkOps);
-    res.json({ success: true, message: 'Reordered' });
+    const { order }: ReorderRequest = req.body;
+    await DatabaseService.reorderPortfolioItems(order);
+    
+    res.json({ success: true, message: 'Portfolio items reordered successfully' });
   } catch (err: any) {
+    console.error('Reorder portfolio items error:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });

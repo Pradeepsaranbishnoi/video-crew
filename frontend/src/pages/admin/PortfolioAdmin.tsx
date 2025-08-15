@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Eye, Search, Filter, ArrowUpDown, X, Star } from "lucide-react";
+import LazyImage from "../../components/common/LazyImage";
+import Seo from "../../components/common/Seo";
+import { apiService, type PortfolioItem as ApiPortfolioItem } from "../../services/api";
 
 interface PortfolioItem {
-  id: number;
+  id: string;
   title: string;
   category: string;
   client: string;
@@ -50,59 +53,36 @@ export default function PortfolioAdmin() {
     display_order: 0,
   });
 
-  // Mock data with proper schema
+  // Load real portfolio data from API
   useEffect(() => {
     const loadPortfolio = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      try {
+        setIsLoading(true);
+        const apiItems = await apiService.getPortfolioItems();
+        
+        // Transform API data to match our interface
+        const transformedItems: PortfolioItem[] = apiItems.map((item: ApiPortfolioItem) => ({
+          id: item._id,
+          title: item.title,
+          category: item.category,
+          client: item.client || "",
+          description: item.description || "",
+          thumbnail_url: item.thumbnail_url,
+          video_url: item.video_url,
+          featured: item.featured || false,
+          display_order: item.display_order || 0,
+          created_at: item.createdAt || new Date().toISOString(),
+          updated_at: item.updatedAt || new Date().toISOString(),
+        }));
 
-      const mockData: PortfolioItem[] = [
-        {
-          id: 1,
-          title: "Corporate Brand Video",
-          category: "Corporate",
-          client: "Samsung Electronics",
-          description:
-            "기업 브랜드 홍보 영상 제작 프로젝트입니다. 회사의 비전과 가치를 담은 감동적인 스토리텔링으로 제작되었습니다.",
-          thumbnail_url:
-            "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-dbtIBtUw1MCwPyCOiTp9uf8pW5Tct2.png",
-          video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          featured: true,
-          display_order: 1,
-          created_at: "2024-01-15T10:30:00Z",
-          updated_at: "2024-01-15T10:30:00Z",
-        },
-        {
-          id: 2,
-          title: "Product Launch Campaign",
-          category: "Commercial",
-          client: "LG Display",
-          description:
-            "신제품 런칭을 위한 프로모션 영상입니다. 제품의 혁신적인 기능을 강조한 역동적인 영상으로 제작되었습니다.",
-          thumbnail_url: "/placeholder.svg?height=300&width=400",
-          video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-          featured: false,
-          display_order: 2,
-          created_at: "2024-01-10T14:20:00Z",
-          updated_at: "2024-01-10T14:20:00Z",
-        },
-        {
-          id: 3,
-          title: "Music Video Production",
-          category: "Music Video",
-          client: "Independent Artist",
-          description:
-            "인디 아티스트를 위한 뮤직비디오 제작입니다. 아티스트의 감성을 담은 독창적인 영상미로 완성되었습니다.",
-          thumbnail_url: "/placeholder.svg?height=300&width=400",
-          video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-          featured: false,
-          display_order: 3,
-          created_at: "2024-01-05T09:15:00Z",
-          updated_at: "2024-01-05T09:15:00Z",
-        },
-      ];
-
-      setPortfolioItems(mockData);
-      setIsLoading(false);
+        setPortfolioItems(transformedItems);
+      } catch (error) {
+        console.error('Failed to load portfolio items:', error);
+        // Fallback to empty array
+        setPortfolioItems([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadPortfolio();
@@ -177,23 +157,64 @@ export default function PortfolioAdmin() {
     setIsSubmitting(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       if (showAddModal) {
-        // Add new item
-        const newItem: PortfolioItem = {
-          id: Date.now(),
-          ...formData,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+        // Add new item via API
+        const newItem = await apiService.createPortfolioItem({
+          title: formData.title,
+          category: formData.category,
+          client: formData.client,
+          description: formData.description,
+          thumbnail_url: formData.thumbnail_url,
+          video_url: formData.video_url,
+          featured: formData.featured,
+          display_order: formData.display_order,
+        });
+        
+        // Add to local state
+        const transformedItem: PortfolioItem = {
+          id: newItem._id,
+          title: newItem.title,
+          category: newItem.category,
+          client: newItem.client || "",
+          description: newItem.description || "",
+          thumbnail_url: newItem.thumbnail_url,
+          video_url: newItem.video_url,
+          featured: newItem.featured || false,
+          display_order: newItem.display_order || 0,
+          created_at: newItem.createdAt || new Date().toISOString(),
+          updated_at: newItem.updatedAt || new Date().toISOString(),
         };
-        setPortfolioItems((prev) => [newItem, ...prev]);
+        
+        setPortfolioItems((prev) => [transformedItem, ...prev]);
         setShowAddModal(false);
       } else if (showEditModal && editingItem) {
-        // Update existing item
+        // Update existing item via API
+        const updatedItem = await apiService.updatePortfolioItem(editingItem.id, {
+          title: formData.title,
+          category: formData.category,
+          client: formData.client,
+          description: formData.description,
+          thumbnail_url: formData.thumbnail_url,
+          video_url: formData.video_url,
+          featured: formData.featured,
+          display_order: formData.display_order,
+        });
+        
+        // Update local state
         setPortfolioItems((prev) =>
           prev.map((item) =>
-            item.id === editingItem.id ? { ...item, ...formData, updated_at: new Date().toISOString() } : item,
+            item.id === editingItem.id ? {
+              ...item,
+              title: updatedItem.title,
+              category: updatedItem.category,
+              client: updatedItem.client || "",
+              description: updatedItem.description || "",
+              thumbnail_url: updatedItem.thumbnail_url,
+              video_url: updatedItem.video_url,
+              featured: updatedItem.featured || false,
+              display_order: updatedItem.display_order || 0,
+              updated_at: updatedItem.updatedAt || new Date().toISOString(),
+            } : item,
           ),
         );
         setShowEditModal(false);
@@ -203,23 +224,46 @@ export default function PortfolioAdmin() {
       resetForm();
     } catch (error) {
       console.error("Submit failed:", error);
+      alert("포트폴리오 저장에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string) => {
     if (confirm("정말로 이 포트폴리오 항목을 삭제하시겠습니까?")) {
-      setPortfolioItems((prev) => prev.filter((item) => item.id !== id));
+      try {
+        await apiService.deletePortfolioItem(id);
+        setPortfolioItems((prev) => prev.filter((item) => item.id !== id));
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("포트폴리오 삭제에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
-  const handleToggleFeatured = (id: number) => {
-    setPortfolioItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, featured: !item.featured, updated_at: new Date().toISOString() } : item,
-      ),
-    );
+  const handleToggleFeatured = async (id: string) => {
+    try {
+      const item = portfolioItems.find(item => item.id === id);
+      if (!item) return;
+      
+      const updatedItem = await apiService.updatePortfolioItem(id, {
+        featured: !item.featured
+      });
+      
+      setPortfolioItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { 
+            ...item, 
+            featured: updatedItem.featured || false, 
+            updated_at: updatedItem.updatedAt || new Date().toISOString() 
+          } : item,
+        ),
+      );
+    } catch (error) {
+      console.error("Toggle featured failed:", error);
+      alert("추천 상태 변경에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -242,6 +286,7 @@ export default function PortfolioAdmin() {
 
   return (
     <div className="space-y-6">
+      <Seo title="Admin Portfolio" description="비디오크루 관리자 – 포트폴리오 항목 추가/편집/삭제 및 상세 보기" />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -305,7 +350,7 @@ export default function PortfolioAdmin() {
             </select>
           </div>
 
-                     <div className="flex items-center text-gray-400 font-korean">총 {filteredItems.length}개 항목</div>
+          <div className="flex items-center text-gray-400 font-korean">총 {filteredItems.length}개 항목</div>
         </div>
       </div>
 
@@ -314,13 +359,10 @@ export default function PortfolioAdmin() {
         {filteredItems.map((item) => (
           <div key={item.id} className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
             <div className="relative h-48">
-              <img 
+              <LazyImage 
                 src={item.thumbnail_url || "/placeholder.svg"} 
                 alt={item.title} 
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239CA3AF' font-family='Arial' font-size='16'%3E이미지 없음%3C/text%3E%3C/svg%3E";
-                }}
               />
               {item.featured && (
                 <div className="absolute top-2 left-2 bg-yellow-500 text-black px-2 py-1 rounded text-xs font-medium flex items-center space-x-1">
@@ -335,14 +377,14 @@ export default function PortfolioAdmin() {
 
             <div className="p-4">
               <div className="flex items-start justify-between mb-2">
-                                 <h3 className="font-semibold text-white text-sm line-clamp-1 font-english">{item.title}</h3>
+                <h3 className="font-semibold text-white text-sm line-clamp-1 font-english">{item.title}</h3>
               </div>
 
-                             <p className="text-xs text-blue-400 mb-1 font-english">{item.category}</p>
-               <p className="text-xs text-gray-400 mb-2 font-english">{item.client}</p>
-               <p className="text-xs text-gray-300 mb-4 line-clamp-2 font-korean">{item.description}</p>
+              <p className="text-xs text-blue-400 mb-1 font-english">{item.category}</p>
+              <p className="text-xs text-gray-400 mb-2 font-english">{item.client}</p>
+              <p className="text-xs text-gray-300 mb-4 line-clamp-2 font-korean">{item.description}</p>
 
-                             <div className="text-xs text-gray-500 mb-3 font-korean">{formatDate(item.created_at)}</div>
+              <div className="text-xs text-gray-500 mb-3 font-korean">{formatDate(item.created_at)}</div>
 
               <div className="flex items-center justify-between">
                 <button
@@ -387,9 +429,9 @@ export default function PortfolioAdmin() {
       {/* Empty State */}
       {filteredItems.length === 0 && (
         <div className="text-center py-12">
-                     <div className="text-gray-400 mb-4 font-korean">
-             {searchTerm || filterCategory !== "all" ? "검색 결과가 없습니다." : "포트폴리오 항목이 없습니다."}
-           </div>
+          <div className="text-gray-400 mb-4 font-korean">
+            {searchTerm || filterCategory !== "all" ? "검색 결과가 없습니다." : "포트폴리오 항목이 없습니다."}
+          </div>
           {searchTerm || filterCategory !== "all" ? (
             <button
               onClick={() => {
@@ -398,12 +440,12 @@ export default function PortfolioAdmin() {
               }}
               className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
-                             <span className="font-korean">필터 초기화</span>
-             </button>
-           ) : (
-             <button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-               <span className="font-korean">첫 번째 포트폴리오 추가</span>
-             </button>
+              <span className="font-korean">필터 초기화</span>
+            </button>
+          ) : (
+            <button onClick={handleAdd} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+              <span className="font-korean">첫 번째 포트폴리오 추가</span>
+            </button>
           )}
         </div>
       )}
@@ -582,13 +624,10 @@ export default function PortfolioAdmin() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
-                    <img
+                    <LazyImage
                       src={viewingItem.thumbnail_url || "/placeholder.svg"}
                       alt={viewingItem.title}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239CA3AF' font-family='Arial' font-size='16'%3E이미지 없음%3C/text%3E%3C/svg%3E";
-                      }}
                     />
                     {viewingItem.featured && (
                       <div className="absolute top-2 left-2 bg-yellow-500 text-black px-2 py-1 rounded text-xs font-medium flex items-center space-x-1">

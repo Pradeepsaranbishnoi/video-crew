@@ -1,98 +1,141 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Play } from "lucide-react"
 import VideoModal from "./VideoModal"
+import LazyImage from "../common/LazyImage"
+import { motion } from "framer-motion"
+import AnimatedText from "../common/AnimatedText"
+import { apiService, type PortfolioItem } from "../../services/api"
 
-interface PortfolioItem {
-  id: number
+interface DisplayPortfolioItem {
+  id: string
   title: string
   subtitle: string
-  category: "video" | "other"
+  category: string
   image: string
   videoUrl: string
   description: string
 }
 
 export default function PortfolioGrid() {
-  const [filter, setFilter] = useState<"all" | "video" | "other">("all")
+  const [filter, setFilter] = useState<string>("all")
   const [visible, setVisible] = useState(5)
-  const [selected, setSelected] = useState<PortfolioItem | null>(null)
+  const [selected, setSelected] = useState<DisplayPortfolioItem | null>(null)
+  const [portfolioItems, setPortfolioItems] = useState<DisplayPortfolioItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [categories, setCategories] = useState<string[]>([])
 
-  const items: PortfolioItem[] = [
-    {
-      id: 1,
-      title: "Logistics Promo",
-      subtitle: "Play Video",
-      category: "video",
-      image: "/portfolio/2.webp",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      description: "대규모 물류 시설의 역동적인 모습을 담은 홍보 영상",
-    },
-    {
-      id: 2,
-      title: "Chanel Promotion",
-      subtitle: "Play Video",
-      category: "video",
-      image: "/portfolio/3.webp",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      description: "기업의 비전과 가치를 표현한 아이덴티티 영상",
-    },
-    {
-      id: 3,
-      title: "Pizza Company",
-      subtitle: "Play Video",
-      category: "video",
-      image: "/portfolio/4.webp",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      description: "럭셔리 패션 브랜드의 감각적인 캠페인 영상",
-    },
-    {
-      id: 4,
-      title: "Nutella Recipe",
-      subtitle: "Play Video",
-      category: "video",
-      image: "/portfolio/5.webp",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-      description: "고급 레스토랑의 분위기를 담은 홍보 영상",
-    },
-    {
-      id: 5,
-      title: "Hublot Watch",
-      subtitle: "Play Video",
-      category: "other",
-      image: "/portfolio/1.webp",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-      description: "혁신적인 기술을 소개하는 다큐멘터리 영상",
-    },
-    {
-      id: 6,
-      title: "Event Coverage",
-      subtitle: "Play Video",
-      category: "other",
-      image: "/placeholder.svg?height=500&width=800",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-      description: "특별 이벤트 현장을 생생하게 담은 영상",
-    },
-    {
-      id: 7,
-      title: "Brand Story",
-      subtitle: "Play Video",
-      category: "video",
-      image: "/placeholder.svg?height=500&width=800",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-      description: "브랜드의 스토리와 철학을 담은 감성 영상",
-    },
-    {
-      id: 8,
-      title: "Product Launch",
-      subtitle: "Play Video",
-      category: "other",
-      image: "/placeholder.svg?height=500&width=800",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-      description: "신제품 런칭을 위한 프로모션 영상",
-    },
-  ]
+  // Fetch portfolio items from API
+  useEffect(() => {
+    const fetchPortfolioItems = async () => {
+      try {
+        setLoading(true)
+        const items = await apiService.getPortfolioItems()
+        
+        // Transform API data to display format
+        const transformedItems: DisplayPortfolioItem[] = items.map((item) => ({
+          id: item._id,
+          title: item.title,
+          subtitle: "Play Video",
+          category: item.category,
+          image: item.thumbnail_url,
+          videoUrl: item.video_url,
+          description: item.description || "Professional video production"
+        }))
+        
+        setPortfolioItems(transformedItems)
+        
+        // Extract unique categories from the data
+        const uniqueCategories = [...new Set(items.map(item => item.category))].filter(cat => cat && cat.trim() !== '')
+        setCategories(uniqueCategories)
+      } catch (err) {
+        console.error('Failed to fetch portfolio items:', err)
+        setError("Failed to load portfolio items")
+        
+        // Fallback to static data if API fails
+        setPortfolioItems([
+          {
+            id: "1",
+            title: "Logistics Promo",
+            subtitle: "Play Video",
+            category: "video",
+            image: "/portfolio/2.webp",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            description: "대규모 물류 시설의 역동적인 모습을 담은 홍보 영상",
+          },
+          {
+            id: "2",
+            title: "Chanel Promotion",
+            subtitle: "Play Video",
+            category: "video",
+            image: "/portfolio/3.webp",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            description: "기업의 비전과 가치를 표현한 아이덴티티 영상",
+          },
+          {
+            id: "3",
+            title: "Pizza Company",
+            subtitle: "Play Video",
+            category: "video",
+            image: "/portfolio/4.webp",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            description: "럭셔리 패션 브랜드의 감각적인 캠페인 영상",
+          },
+          {
+            id: "4",
+            title: "Nutella Recipe",
+            subtitle: "Play Video",
+            category: "video",
+            image: "/portfolio/5.webp",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            description: "고급 레스토랑의 분위기를 담은 홍보 영상",
+          },
+          {
+            id: "5",
+            title: "Hublot Watch",
+            subtitle: "Play Video",
+            category: "other",
+            image: "/portfolio/1.webp",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+            description: "혁신적인 기술을 소개하는 다큐멘터리 영상",
+          }
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const filtered = items.filter((i) => filter === "all" || i.category === filter)
+    fetchPortfolioItems()
+  }, [])
+
+  // Function to translate categories to Korean
+  const translateCategoryToKorean = (category: string): string => {
+    const translations: { [key: string]: string } = {
+      'Corporate': '기업 영상',
+      'Commercial': '광고 영상',
+      'Music Video': '뮤직비디오',
+      'Documentary': '다큐멘터리',
+      'Event': '이벤트 영상',
+      'Branding': '브랜딩 영상',
+      'Promotional': '홍보 영상',
+      'Training': '교육 영상',
+      'Product': '제품 영상',
+      'Corporate Event': '기업 행사',
+      'Marketing': '마케팅 영상',
+      'Social Media': '소셜미디어',
+      'Webinar': '웨비나',
+      'Interview': '인터뷰',
+      'Testimonial': '고객 후기',
+      'Company Culture': '회사 문화',
+      'Product Launch': '제품 런칭',
+      'Annual Report': '연간 보고서',
+      'Safety Training': '안전 교육',
+      'Corporate Communication': '기업 커뮤니케이션'
+    }
+    return translations[category] || category
+  }
+
+  const filtered = portfolioItems.filter((i) => filter === "all" || i.category === filter)
   const displayed = filtered.slice(0, visible)
   const hasMore = visible < filtered.length
 
@@ -106,40 +149,86 @@ export default function PortfolioGrid() {
   return (
     <section className="pt-37.5 pb-30 px-6 z-1">
         <div className="max-w-7xl mx-auto px-6 relative">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-                <h2 className="font-semibold uppercase mb-8 font-english">
+            <motion.div 
+              className="max-w-7xl mx-auto text-center mb-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6 }}
+            >
+                <AnimatedText
+                  as="h2"
+                  className="font-semibold uppercase mb-8 font-english"
+                  delay={0.2}
+                  stagger={0.05}
+                >
                     Portfolio
-                </h2>
-                <h1 className="text-[64px] font-semibold mb-18.5 leading-18 font-english">
+                </AnimatedText>
+                <AnimatedText
+                  as="h1"
+                  className="text-[64px] font-semibold mb-18.5 leading-18 font-english"
+                  delay={0.4}
+                  stagger={0.05}
+                >
                 We Create Beautiful,
                 <br />
                 <span className="text-[#2448FF]">Practical Works</span>
-                </h1>
+                </AnimatedText>
 
-                <div className="flex flex-wrap justify-center gap-4 mb-12">
-                <button onClick={() => setFilter("all")} className={`${btnClass("all")} font-korean`}>
-                    광고 · 홍보 영상 
-                </button>
-                <button onClick={() => setFilter("video")} className={`${btnClass("video")} font-korean`}>
-                    이러닝 영상
-                </button>
-                <button onClick={() => setFilter("other")} className={`${btnClass("other")} font-korean`}>
-                    기업 행사 영상
-                </button>
-                </div>
-            </div>
+                <motion.div 
+                  className="flex flex-wrap justify-center gap-4 mb-12"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                <motion.button 
+                  onClick={() => setFilter("all")} 
+                  className={`${btnClass("all")} font-korean`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                    전체 보기
+                </motion.button>
+                {categories.map((category) => (
+                  <motion.button 
+                    key={category}
+                    onClick={() => setFilter(category)} 
+                    className={`${btnClass(category)} font-korean`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {translateCategoryToKorean(category)}
+                  </motion.button>
+                ))}
+                </motion.div>
+            </motion.div>
 
-            <div className="space-y-8 mb-30">
-                {displayed.map((item) => (
-                <div
+            <motion.div 
+              className="space-y-8 mb-30"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+                {displayed.map((item, index) => (
+                <motion.div
                     key={item.id}
                     className="group relative h-96 md:h-[560px] overflow-hidden rounded-lg bg-gray-900"
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: index * 0.2,
+                      ease: [0.25, 0.46, 0.45, 0.94]
+                    }}
                 >
-                    <img
-                    src={item.image}
-                    alt={item.title}
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
-                    />
+                                    <LazyImage
+                  src={item.image}
+                  alt={item.title}
+                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
+                />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
 
                     <div
@@ -154,22 +243,30 @@ export default function PortfolioGrid() {
                         <p className="text-gray-300 text-[16px] font-english">{item.subtitle}</p>
                     </div>
                     </div>
-                </div>
+                </motion.div>
                 ))}
-            </div>
+            </motion.div>
 
             {hasMore && (
-                <div className="text-center">
-                <button
+                <motion.div 
+                  className="text-center"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6 }}
+                >
+                <motion.button
                     onClick={() => setVisible((v) => v + 5)}
                     className="bg-[#2448FF] text-white px-14 py-3 rounded-full transition cursor-pointer text-[20px] font-semibold font-english"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                 >
                     Load More
-                </button>
-                </div>
+                </motion.button>
+                </motion.div>
             )}
 
-            <VideoModal isOpen={!!selected} onClose={() => setSelected(null)} video={selected} />
+            <VideoModal isOpen={!!selected} onClose={() => setSelected(null)} video={selected as any} />
         </div>
     </section>
   )

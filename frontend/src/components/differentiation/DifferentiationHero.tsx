@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react"
+import LazyImage from "../common/LazyImage"
+import { motion } from "framer-motion"
+import AnimatedText from "../common/AnimatedText"
 
 interface HeroSlide {
   id: number
@@ -59,31 +62,69 @@ export default function DifferentiationHero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Top small text */}
-        <div className="mb-3">
-          <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 tracking-wide font-korean">
+        <motion.div 
+          className="mb-3"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <AnimatedText
+            as="p"
+            className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 tracking-wide font-korean"
+            delay={0.2}
+            stagger={0.05}
+          >
             왜 비디오크루를 선택해야 할까요? ​
-          </p>
-        </div>
+          </AnimatedText>
+        </motion.div>
 
         {/* Title + Description */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-10 lg:mb-14">
+        <motion.div 
+          className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-10 lg:mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
           {/* Left - Main Title */}
-          <div>
-            <h1 className="text-[28px] sm:text-[35px] lg:text-[45px] font-bold leading-tight text-white font-korean">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <AnimatedText
+              as="h1"
+              className="text-[28px] sm:text-[35px] lg:text-[45px] font-bold leading-tight text-white font-korean"
+              delay={0.5}
+              stagger={0.05}
+            >
               비디오크루만의 특별함​
-            </h1>
-          </div>
+            </AnimatedText>
+          </motion.div>
 
           {/* Right - Description */}
-          <div className="flex items-start lg:pt-4">
+          <motion.div 
+            className="flex items-start lg:pt-4"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
             <div className="space-y-4">
-              <p className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 leading-relaxed font-korean">
+              <AnimatedText
+                as="p"
+                className="text-[14px] sm:text-[15px] lg:text-[16px] text-white opacity-60 leading-relaxed font-korean"
+                delay={0.7}
+                stagger={0.03}
+              >
                 컨설턴트가 스토리를 입히고, 전문 디자이너와 촬영감독, PD가 1:1 맞춤 설계된 <br className="hidden sm:block" />
                 영상을 제공하며, 차별화된 스토리와 다양한 선택지를 제시합니다.
-              </p>
+              </AnimatedText>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Hero Image Slider */}
         <div className="relative mb-6 group">
@@ -95,7 +136,7 @@ export default function DifferentiationHero() {
                   index === currentSlide ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <img
+                <LazyImage
                   src={slide.image}
                   alt={slide.alt}
                   className="w-full h-full object-cover"
@@ -122,21 +163,46 @@ export default function DifferentiationHero() {
         </div>
 
         {/* Concern Cards */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-7.5 pb-20 lg:pb-40">
+        <motion.div 
+          className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-7.5 pb-20 lg:pb-40"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
           {concerns.map((concern, index) => (
-            <div
+            <motion.div
               key={index}
               className="bg-[#0A0A0A] p-6 sm:p-8 lg:p-10.5 border border-white/10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ 
+                duration: 0.6, 
+                delay: index * 0.2,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              whileHover={{ y: -5 }}
             >
-              <h3 className="text-white font-bold text-[18px] sm:text-[19px] lg:text-[20px] mb-3 leading-tight whitespace-pre-line font-korean">
+              <AnimatedText
+                as="h3"
+                className="text-white font-bold text-[18px] sm:text-[19px] lg:text-[20px] mb-3 leading-tight whitespace-pre-line font-korean"
+                delay={0.1}
+                stagger={0.05}
+              >
                 {concern.title}
-              </h3>
-              <p className="text-[#7E7E7E] text-[14px] sm:text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line font-korean">
+              </AnimatedText>
+              <AnimatedText
+                as="p"
+                className="text-[#7E7E7E] text-[14px] sm:text-[15px] lg:text-[16px] leading-relaxed whitespace-pre-line font-korean"
+                delay={0.2}
+                stagger={0.03}
+              >
                 {concern.description}
-              </p>
-            </div>
+              </AnimatedText>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

@@ -1,4 +1,7 @@
 import {useState} from "react";
+import LazyImage from "../common/LazyImage";
+import { motion } from "framer-motion";
+import AnimatedText from "../common/AnimatedText";
 
 interface ProcessStepProps {
   number: string;
@@ -30,17 +33,27 @@ export default function ProcessStep({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <motion.div 
+      className={`relative ${className}`}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8 }}
+    >
       {/* Content Container */}
       <div className="max-w-7xl mx-auto px-6 relative">
         {/* Large Background Number */}
-        <div
+        <motion.div
             className={`absolute text-[147px] font-bold text-white leading-none select-none opacity-20 z-0 font-english ${
             reverse ? "top-[-135px] right-0 md:right-8" : "top-[-135px] left-0 md:left-8"
             }`}
+            initial={{ opacity: 0, scale: 0.5 }}
+            whileInView={{ opacity: 0.2, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.3 }}
         >
             {number}
-        </div>
+        </motion.div>
         <div
           className={`grid lg:grid-cols-2 gap-16 items-center ${
             reverse ? "lg:grid-flow-col-dense" : ""
@@ -51,7 +64,7 @@ export default function ProcessStep({
             <div className="relative border-[1px] border-solid [border-image:linear-gradient(to_bottom,#2E2E2E,#2E2E2E_40%,#ffffff_100%)_1] [border-image-slice:1]">
               {/* Image */}
               <div className="relative h-64 lg:h-106 overflow-hidden bg-gray-900 z-1">
-                <img
+                <LazyImage
                   src={image || "/placeholder.svg"}
                   alt={`${title} - ${subtitle}`}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
@@ -61,19 +74,40 @@ export default function ProcessStep({
                 {/* Text Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
                   <div className="space-y-3">
-                    <h3 className="text-[20px] font-bold text-white mb-1.75 font-korean">{title}</h3>
-                    <p className="text-[20px] font-bold text-white font-english">{subtitle}</p>
-                    <p className="text-[16px] text-white/60 leading-relaxed font-korean">
+                    <AnimatedText
+                      as="h3"
+                      className="text-[20px] font-bold text-white mb-1.75 font-korean"
+                      delay={0.5}
+                      stagger={0.05}
+                    >
+                      {title}
+                    </AnimatedText>
+                    <AnimatedText
+                      as="p"
+                      className="text-[20px] font-bold text-white font-english"
+                      delay={0.6}
+                      stagger={0.05}
+                    >
+                      {subtitle}
+                    </AnimatedText>
+                    <AnimatedText
+                      as="p"
+                      className="text-[16px] text-white/60 leading-relaxed font-korean"
+                      delay={0.7}
+                      stagger={0.03}
+                    >
                       {isExpanded && fullDescription ? fullDescription : description}
                       {showSeeMore && (
-                      <button
+                      <motion.button
                         onClick={toggleExpanded}
                         className="text-white text-sm transition-colors cursor-pointer ml-2 text-bold font-english"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
                         {isExpanded ? "See less" : "See more"}
-                      </button>
+                      </motion.button>
                     )}
-                    </p>
+                    </AnimatedText>
                   </div>
                 </div>
               </div>
@@ -87,15 +121,27 @@ export default function ProcessStep({
 
       {/* Connecting Dotted Line */}
       {(number === "02" || number === "04") && (
-        <div className="absolute bottom-[-100px] left-1/2 transform -translate-x-1/2 border-gray-600">
-            <img src="/Process/even.png" className="w-full"/>
-        </div>
+        <motion.div 
+          className="absolute bottom-[-100px] left-1/2 transform -translate-x-1/2 border-gray-600"
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.5 }}
+        >
+            <LazyImage src="/Process/even.png" className="w-full"/>
+        </motion.div>
       )}
       {(number === "01" || number === "03" || number === "05") && (
-        <div className="absolute bottom-[50px] left-1/2 transform -translate-x-1/2 border-gray-600">
-            <img src="/Process/odd.png" className="w-full"/>
-        </div>
+        <motion.div 
+          className="absolute bottom-[50px] left-1/2 transform -translate-x-1/2 border-gray-600"
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.5 }}
+        >
+            <LazyImage src="/Process/odd.png" className="w-full"/>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };

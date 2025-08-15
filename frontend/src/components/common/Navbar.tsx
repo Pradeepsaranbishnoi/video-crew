@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import LazyImage from "./LazyImage";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -38,7 +39,7 @@ export default function Header() {
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/">
-            <img src="./logo.svg" alt="logo" width={167} />
+            <LazyImage src="./logo.svg" alt="logo" width={167} />
           </Link>
 
           {/* Desktop Menu */}

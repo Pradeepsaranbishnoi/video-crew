@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, MessageSquare, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import Seo from "../../components/common/Seo";
+import { apiService } from "../../services/api";
 
 interface ContactInquiry {
-  id: number;
+  id: string;
   name: string;
   email: string;
   company: string;
@@ -23,74 +25,62 @@ export default function ContactsAdmin() {
   const [selectedContact, setSelectedContact] = useState<ContactInquiry | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  // Mock data
+  // Load real contact data from API
   useEffect(() => {
     const loadContacts = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      try {
+        setIsLoading(true);
+        const apiContacts = await apiService.getContactInquiries();
+        
+        // Transform API data to match our interface
+        const transformedContacts: ContactInquiry[] = apiContacts.map((contact: any) => ({
+          id: contact._id,
+          name: contact.name,
+          email: contact.email,
+          company: extractCompanyFromMessage(contact.message) || "개인",
+          subject: contact.subject,
+          message: contact.message,
+          budget: extractBudgetFromMessage(contact.message) || "상담 후 결정",
+          purpose: extractPurposeFromMessage(contact.message) || "기타",
+          status: contact.status || "new",
+          createdAt: contact.createdAt || new Date().toISOString(),
+          updatedAt: contact.updatedAt || new Date().toISOString(),
+        }));
 
-      const mockData: ContactInquiry[] = [
-        {
-          id: 1,
-          name: "김철수",
-          email: "kim@example.com",
-          company: "ABC 기업",
-          subject: "기업 홍보영상 제작 문의",
-          message:
-            "저희 회사 홍보영상을 제작하고 싶습니다. 3분 정도의 영상으로 회사 소개와 제품 소개를 포함했으면 좋겠습니다.",
-          budget: "1000-2000만원",
-          purpose: "기업 홍보",
-          status: "new",
-          createdAt: "2024-01-15T10:30:00Z",
-          updatedAt: "2024-01-15T10:30:00Z",
-        },
-        {
-          id: 2,
-          name: "이영희",
-          email: "lee@example.com",
-          company: "XYZ 스타트업",
-          subject: "제품 런칭 영상 제작",
-          message: "신제품 런칭을 위한 프로모션 영상이 필요합니다. 젊은 타겟층을 대상으로 한 감각적인 영상을 원합니다.",
-          budget: "500-1000만원",
-          purpose: "광고/마케팅",
-          status: "processing",
-          createdAt: "2024-01-14T14:20:00Z",
-          updatedAt: "2024-01-14T16:45:00Z",
-        },
-        {
-          id: 3,
-          name: "박민수",
-          email: "park@example.com",
-          company: "개인",
-          subject: "웨딩 영상 제작 문의",
-          message: "결혼식 하이라이트 영상을 제작하고 싶습니다. 감동적이고 아름다운 영상으로 만들어주세요.",
-          budget: "500만원 미만",
-          purpose: "개인 기념",
-          status: "completed",
-          createdAt: "2024-01-12T09:15:00Z",
-          updatedAt: "2024-01-13T11:30:00Z",
-        },
-        {
-          id: 4,
-          name: "정수연",
-          email: "jung@example.com",
-          company: "DEF 재단",
-          subject: "비영리 단체 홍보영상",
-          message:
-            "비영리 재단의 활동을 알리는 홍보영상을 제작하고 싶습니다. 따뜻하고 진정성 있는 메시지를 담았으면 좋겠습니다.",
-          budget: "상담 후 결정",
-          purpose: "비영리 홍보",
-          status: "new",
-          createdAt: "2024-01-11T16:45:00Z",
-          updatedAt: "2024-01-11T16:45:00Z",
-        },
-      ];
-
-      setContacts(mockData);
-      setIsLoading(false);
+        setContacts(transformedContacts);
+      } catch (error) {
+        console.error('Failed to load contact inquiries:', error);
+        // Fallback to empty array
+        setContacts([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadContacts();
   }, []);
+
+  // Helper functions to extract data from message
+  const extractCompanyFromMessage = (message: string): string => {
+    const companyMatch = message.match(/회사명[:\s]*([^\n]+)/i) || 
+                        message.match(/Company[:\s]*([^\n]+)/i) ||
+                        message.match(/회사[:\s]*([^\n]+)/i);
+    return companyMatch ? companyMatch[1].trim() : "";
+  };
+
+  const extractBudgetFromMessage = (message: string): string => {
+    const budgetMatch = message.match(/예산[:\s]*([^\n]+)/i) || 
+                       message.match(/Budget[:\s]*([^\n]+)/i) ||
+                       message.match(/(\d+[-\s]*\d*만원)/i);
+    return budgetMatch ? budgetMatch[1].trim() : "";
+  };
+
+  const extractPurposeFromMessage = (message: string): string => {
+    const purposeMatch = message.match(/목적[:\s]*([^\n]+)/i) || 
+                        message.match(/Purpose[:\s]*([^\n]+)/i) ||
+                        message.match(/제작 목적[:\s]*([^\n]+)/i);
+    return purposeMatch ? purposeMatch[1].trim() : "";
+  };
 
   // Filter contacts
   const filteredContacts = contacts.filter((contact) => {
@@ -116,12 +106,19 @@ export default function ContactsAdmin() {
     }
   };
 
-  const handleStatusChange = (id: number, newStatus: "new" | "processing" | "completed") => {
-    setContacts((prev) =>
-      prev.map((contact) =>
-        contact.id === id ? { ...contact, status: newStatus, updatedAt: new Date().toISOString() } : contact,
-      ),
-    );
+  const handleStatusChange = async (id: string, newStatus: "new" | "processing" | "completed") => {
+    try {
+      await apiService.updateContactInquiry(id, { status: newStatus });
+      
+      setContacts((prev) =>
+        prev.map((contact) =>
+          contact.id === id ? { ...contact, status: newStatus, updatedAt: new Date().toISOString() } : contact,
+        ),
+      );
+    } catch (error) {
+      console.error("Status change failed:", error);
+      alert("상태 변경에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -144,6 +141,7 @@ export default function ContactsAdmin() {
 
   return (
     <div className="space-y-6">
+      <Seo title="Admin Contacts" description="비디오크루 관리자 – 문의 목록 조회 및 상태 관리" />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -185,7 +183,7 @@ export default function ContactsAdmin() {
             </select>
           </div>
 
-                     <div className="flex items-center text-gray-400 font-korean">총 {filteredContacts.length}개 문의</div>
+          <div className="flex items-center text-gray-400 font-korean">총 {filteredContacts.length}개 문의</div>
         </div>
       </div>
 

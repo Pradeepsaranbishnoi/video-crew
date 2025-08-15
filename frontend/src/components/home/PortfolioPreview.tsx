@@ -1,3 +1,7 @@
+import LazyImage from "../common/LazyImage";
+import { motion } from "framer-motion";
+import AnimatedText from "../common/AnimatedText";
+
 export default function PortfolioPreview() {
   // First row images (scrolling left to right)
   const topRowImages = [
@@ -21,16 +25,32 @@ export default function PortfolioPreview() {
     <section className="pt-0 px-4 sm:px-6 bg-black overflow-hidden text-center">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="mb-10 sm:mb-16">
-          <h2 className="text-[28px] sm:text-[36px] md:text-[45px] font-bold mb-4 sm:mb-6 text-white">
+        <motion.div 
+          className="mb-10 sm:mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <AnimatedText
+            as="h2"
+            className="text-[28px] sm:text-[36px] md:text-[45px] font-bold mb-4 sm:mb-6 text-white"
+            delay={0.2}
+            stagger={0.05}
+          >
             비디오크루의 영상제작 사례​
-          </h2>
-          <p className="text-gray-400 text-[14px] sm:text-[16px] mb-2 leading-relaxed">
+          </AnimatedText>
+          <AnimatedText
+            as="p"
+            className="text-gray-400 text-[14px] sm:text-[16px] mb-2 leading-relaxed"
+            delay={0.4}
+            stagger={0.03}
+          >
             당신의 이야기에 생명을 불어넣는 영상, 비디오크루가 만듭니다.
             <br className="hidden sm:block" />
             모든 프레임에 가치를 담다, 비디오크루​
-          </p>
-        </div>
+          </AnimatedText>
+        </motion.div>
       </div>
 
       {/* Top Row - Left to Right Scroll */}
@@ -41,7 +61,7 @@ export default function PortfolioPreview() {
               key={index}
               className="flex-shrink-0 w-48 h-32 sm:w-60 sm:h-40 md:w-80 md:h-48 mx-2 sm:mx-3 relative overflow-hidden group cursor-pointer bg-gray-900"
             >
-              <img
+              <LazyImage
                 src={image}
                 alt={`Portfolio showcase ${index + 1}`}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -59,7 +79,7 @@ export default function PortfolioPreview() {
               key={index}
               className="flex-shrink-0 w-48 h-32 sm:w-60 sm:h-40 md:w-80 md:h-48 mx-2 sm:mx-3 relative overflow-hidden group cursor-pointer bg-gray-900"
             >
-              <img
+              <LazyImage
                 src={image}
                 alt={`Portfolio showcase ${index + 1}`}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -70,9 +90,17 @@ export default function PortfolioPreview() {
       </div>
 
       {/* CTA Button */}
-      <button className="bg-blue-600 hover:bg-blue-700 px-5 sm:px-7.5 py-2 sm:py-2.5 rounded-full text-[16px] sm:text-[18px] md:text-[20px] font-medium transition-all duration-300 hover:scale-105 text-white cursor-pointer">
+      <motion.button 
+        className="bg-blue-600 hover:bg-blue-700 px-5 sm:px-7.5 py-2 sm:py-2.5 rounded-full text-[16px] sm:text-[18px] md:text-[20px] font-medium transition-all duration-300 hover:scale-105 text-white cursor-pointer"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        whileHover={{ scale: 1.05, y: -2 }}
+        whileTap={{ scale: 0.95 }}
+      >
         포트폴리오 둘러보기​
-      </button>
+      </motion.button>
     </section>
   );
 }

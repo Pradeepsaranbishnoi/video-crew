@@ -1,8 +1,44 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Upload, ImageIcon, Video, Trash2, Search, Filter, Download, Eye } from "lucide-react";
+import { Upload, ImageIcon, Video, Trash2, Search, Filter, Download, Eye, Copy } from "lucide-react";
+import LazyImage from "../../components/common/LazyImage";
+import Seo from "../../components/common/Seo";
+import { apiService } from "../../services/api";
+
+// Custom CSS for toast animations
+const toastStyles = `
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+  
+  .animate-slideInRight {
+    animation: slideInRight 0.5s ease-out forwards;
+  }
+  
+  .animate-slideOutRight {
+    animation: slideOutRight 0.5s ease-in forwards;
+  }
+`;
 
 interface MediaFile {
-  id: number;
+  id: string;
   name: string;
   type: "image" | "video";
   url: string;
@@ -20,55 +56,53 @@ export default function MediaAdmin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [previewModal, setPreviewModal] = useState<{
+    isOpen: boolean;
+    file: MediaFile | null;
+  }>({
+    isOpen: false,
+    file: null
+  });
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: 'success' | 'error';
+  }>({
+    show: false,
+    message: '',
+    type: 'success'
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock data
+  // Load media files from API
   useEffect(() => {
     const loadMedia = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      try {
+        setIsLoading(true);
+        const apiFiles = await apiService.getMediaFiles();
+        
+        // Transform API data to match our interface
+        const transformedFiles: MediaFile[] = apiFiles.map((file: any) => {
+          console.log('Media file from API:', file); // Debug log
+          return {
+            id: file._id,
+            name: file.originalName,
+            type: file.type,
+            url: file.url,
+            size: file.size,
+            uploadedAt: file.createdAt,
+            dimensions: file.dimensions || { width: 1920, height: 1080 },
+          };
+        });
 
-      const mockData: MediaFile[] = [
-        {
-          id: 1,
-          name: "corporate-video-thumbnail.jpg",
-          type: "image",
-          url: "/placeholder.svg?height=300&width=400",
-          size: 245760,
-          uploadedAt: "2024-01-15T10:30:00Z",
-          dimensions: { width: 1920, height: 1080 },
-        },
-        {
-          id: 2,
-          name: "product-launch-video.mp4",
-          type: "video",
-          url: "https://example.com/video.mp4",
-          size: 52428800,
-          uploadedAt: "2024-01-14T14:20:00Z",
-          dimensions: { width: 1920, height: 1080 },
-        },
-        {
-          id: 3,
-          name: "hero-background.jpg",
-          type: "image",
-          url: "/placeholder.svg?height=600&width=1200",
-          size: 512000,
-          uploadedAt: "2024-01-13T09:15:00Z",
-          dimensions: { width: 1920, height: 1080 },
-        },
-        {
-          id: 4,
-          name: "music-video-preview.mp4",
-          type: "video",
-          url: "https://example.com/music-video.mp4",
-          size: 78643200,
-          uploadedAt: "2024-01-12T16:45:00Z",
-          dimensions: { width: 1920, height: 1080 },
-        },
-      ];
-
-      setMediaFiles(mockData);
-      setIsLoading(false);
+        setMediaFiles(transformedFiles);
+      } catch (error) {
+        console.error('Failed to load media files:', error);
+        setMediaFiles([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadMedia();
@@ -105,47 +139,139 @@ export default function MediaAdmin() {
     setIsUploading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const newFiles: MediaFile[] = Array.from(files).map((file, index) => ({
-        id: Date.now() + index,
-        name: file.name,
-        type: file.type.startsWith("image/") ? "image" : "video",
-        url: URL.createObjectURL(file),
-        size: file.size,
-        uploadedAt: new Date().toISOString(),
-        dimensions: { width: 1920, height: 1080 },
-      }));
-      setMediaFiles((prev) => [...newFiles, ...prev]);
+      const newFiles: MediaFile[] = [];
+      
+      for (const file of Array.from(files)) {
+        try {
+          let uploadResult;
+          
+          if (file.type.startsWith("image/")) {
+            uploadResult = await apiService.uploadImage(file);
+          } else if (file.type.startsWith("video/")) {
+            uploadResult = await apiService.uploadVideo(file);
+          } else {
+            console.warn(`Unsupported file type: ${file.type}`);
+            continue;
+          }
+
+          const newFile: MediaFile = {
+            id: Date.now() + Math.random().toString(36).substr(2, 9),
+            name: file.name,
+            type: file.type.startsWith("image/") ? "image" : "video",
+            url: uploadResult.url,
+            size: file.size,
+            uploadedAt: new Date().toISOString(),
+            dimensions: { width: 1920, height: 1080 }, // Default dimensions
+          };
+          
+          newFiles.push(newFile);
+        } catch (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
+          alert(`Failed to upload ${file.name}. Please try again.`);
+        }
+      }
+
+      if (newFiles.length > 0) {
+        // Reload media files from API to get the updated list
+        const apiFiles = await apiService.getMediaFiles();
+        const transformedFiles: MediaFile[] = apiFiles.map((file: any) => ({
+          id: file._id,
+          name: file.originalName,
+          type: file.type,
+          url: file.url,
+          size: file.size,
+          uploadedAt: file.createdAt,
+          dimensions: file.dimensions || { width: 1920, height: 1080 },
+        }));
+        setMediaFiles(transformedFiles);
+      }
+
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Upload failed:", error);
+      alert("Upload failed. Please try again.");
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string) => {
     if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
-      setMediaFiles((files) => files.filter((file) => file.id !== id));
+      try {
+        await apiService.deleteMediaFile(id);
+        const updatedFiles = mediaFiles.filter((file) => file.id !== id);
+        setMediaFiles(updatedFiles);
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("파일 삭제에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
-  const handleSelectFile = (id: number) => {
+  const handleSelectFile = (id: string) => {
     setSelectedFiles((prev) =>
       prev.includes(id) ? prev.filter((fileId) => fileId !== id) : [...prev, id],
     );
   };
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (selectedFiles.length === 0) return;
     if (confirm(`${selectedFiles.length}개의 파일을 삭제하시겠습니까?`)) {
-      setMediaFiles((files) => files.filter((file) => !selectedFiles.includes(file.id)));
-      setSelectedFiles([]);
+      try {
+        // Delete each file from API
+        for (const id of selectedFiles) {
+          await apiService.deleteMediaFile(id);
+        }
+        
+        const updatedFiles = mediaFiles.filter((file) => !selectedFiles.includes(file.id));
+        setMediaFiles(updatedFiles);
+        setSelectedFiles([]);
+      } catch (error) {
+        console.error("Bulk delete failed:", error);
+        alert("파일 삭제에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setToast({
+        show: true,
+        message: '✅ URL이 클립보드에 복사되었습니다!',
+        type: 'success'
+      });
+      // Auto hide toast after 3 seconds
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: 'success' });
+      }, 3000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      setToast({
+        show: true,
+        message: '❌ URL 복사에 실패했습니다.',
+        type: 'error'
+      });
+      // Auto hide toast after 3 seconds
+      setTimeout(() => {
+        setToast({ show: false, message: '', type: 'error' });
+      }, 3000);
+    }
+  };
+
+  const closeToast = () => {
+    setToast({ show: false, message: '', type: 'success' });
+  };
+
+  // Debug: Log when modal opens
+  useEffect(() => {
+    if (previewModal.isOpen && previewModal.file) {
+      console.log('Modal opened with URL:', previewModal.file.url);
+    }
+  }, [previewModal.isOpen, previewModal.file]);
+
   const totalSize = mediaFiles.reduce((sum, file) => sum + file.size, 0);
-  const usedSpace = (totalSize / (1024 * 1024 * 1024)).toFixed(2); // GB
+  const usedSpace = (totalSize / (1024 * 1024)).toFixed(2); // MB
 
   if (isLoading) {
     return (
@@ -157,6 +283,8 @@ export default function MediaAdmin() {
 
   return (
     <div className="space-y-6">
+      <style>{toastStyles}</style>
+      <Seo title="Admin Media" description="비디오크루 관리자 – 이미지/비디오 업로드 및 파일 관리" />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -175,7 +303,7 @@ export default function MediaAdmin() {
           )}
           <label className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors cursor-pointer">
             <Upload className="w-4 h-4" />
-                          <span className="font-korean">{isUploading ? "업로드 중..." : "파일 업로드"}</span>
+            <span className="font-korean">{isUploading ? "업로드 중..." : "파일 업로드"}</span>
             <input
               ref={fileInputRef}
               type="file"
@@ -244,17 +372,46 @@ export default function MediaAdmin() {
             >
               <div className="relative h-48">
                 {file.type === "image" ? (
-                  <img
-                    src={file.url}
-                    alt={file.name}
-                    className="w-full h-full object-cover rounded-t-xl"
-                    onError={(e) => {
-                      e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239CA3AF' font-family='Arial' font-size='12'%3E이미지 없음%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
+                  <>
+                    {console.log('Rendering image with URL:', file.url)} {/* Debug log */}
+                    <img
+                      src={file.url}
+                      alt={file.name}
+                      className="w-full h-full object-cover rounded-t-xl bg-gray-800 cursor-pointer"
+                      onError={(e) => {
+                        console.error('Image failed to load:', file.url);
+                        console.error('Error event:', e);
+                        console.error('Error target:', e.target);
+                      }}
+                      onLoad={() => {
+                        console.log('Image loaded successfully:', file.url);
+                      }}
+                      crossOrigin="anonymous"
+                    />
+                  </>
                 ) : (
-                  <div className="w-full h-full bg-gray-800 rounded-t-xl flex items-center justify-center">
-                    <Video className="w-12 h-12 text-gray-600" />
+                  <div className="w-full h-full bg-gray-800 rounded-t-xl relative overflow-hidden">
+                    <video
+                      src={file.url}
+                      className="w-full h-full object-cover"
+                      muted
+                      preload="metadata"
+                      onError={(e) => {
+                        console.error('Video failed to load:', file.url);
+                        console.error('Error event:', e);
+                        console.error('Error target:', e.target);
+                      }}
+                      onLoadedMetadata={() => {
+                        console.log('Video metadata loaded successfully:', file.url);
+                      }}
+                      crossOrigin="anonymous"
+                    />
+                    {/* Video overlay with play icon */}
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                        <Video className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -271,9 +428,13 @@ export default function MediaAdmin() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        window.open(file.url, "_blank");
+                        setPreviewModal({
+                          isOpen: true,
+                          file: file
+                        });
                       }}
-                      className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
+                      className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors cursor-pointer"
+                      title="Preview Image"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -285,7 +446,8 @@ export default function MediaAdmin() {
                         link.download = file.name;
                         link.click();
                       }}
-                      className="p-2 bg-green-600 rounded-lg text-white hover:bg-green-700 transition-colors"
+                      className="p-2 bg-green-600 rounded-lg text-white hover:bg-green-700 transition-colors cursor-pointer"
+                      title="Download File"
                     >
                       <Download className="w-4 h-4" />
                     </button>
@@ -294,7 +456,8 @@ export default function MediaAdmin() {
                         e.stopPropagation();
                         handleDelete(file.id);
                       }}
-                      className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors"
+                      className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors cursor-pointer"
+                      title="Delete File"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -339,7 +502,7 @@ export default function MediaAdmin() {
       {/* Empty State */}
       {filteredFiles.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">
+          <div className="text-gray-400">
             {searchTerm || filterType !== "all" ? "검색 결과가 없습니다." : "미디어 파일이 없습니다."}
           </div>
           {searchTerm || filterType !== "all" ? (
@@ -374,12 +537,12 @@ export default function MediaAdmin() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-gray-400">사용된 공간</span>
-            <span className="text-white">{usedSpace} GB / 10 GB</span>
+            <span className="text-white">{usedSpace} MB / 512 MB</span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(parseFloat(usedSpace) / 10) * 100}%` }}
+              style={{ width: `${(parseFloat(usedSpace) / 512) * 100}%` }}
             ></div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -397,11 +560,176 @@ export default function MediaAdmin() {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">사용률</span>
-              <span className="text-white">{((parseFloat(usedSpace) / 10) * 100).toFixed(1)}%</span>
+              <span className="text-white">{((parseFloat(usedSpace) / 512) * 100).toFixed(1)}%</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Image Preview Modal */}
+      {previewModal.isOpen && previewModal.file && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-800">
+              <div className="flex items-center space-x-3">
+                <h3 className="text-xl font-semibold text-white font-korean">
+                  {previewModal.file.name}
+                </h3>
+                <span className={`px-2 py-1 rounded text-xs font-medium ${
+                  previewModal.file.type === 'image' 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-blue-600 text-white'
+                }`}>
+                  {previewModal.file.type === 'image' ? '이미지' : '비디오'}
+                </span>
+              </div>
+              <button
+                onClick={() => setPreviewModal({ isOpen: false, file: null })}
+                className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 flex-1 overflow-y-auto">
+              {/* Media Preview */}
+              <div className="flex justify-center mb-6">
+                {previewModal.file.type === 'image' ? (
+                  <img
+                    src={previewModal.file.url}
+                    alt={previewModal.file.name}
+                    className="max-w-full max-h-96 object-contain rounded-lg bg-gray-800"
+                    onError={(e) => {
+                      console.error('Preview image failed to load:', previewModal.file?.url);
+                      console.error('Error event:', e);
+                      console.error('Error target:', e.target);
+                    }}
+                    onLoad={() => {
+                      console.log('Preview image loaded successfully:', previewModal.file?.url);
+                    }}
+                    crossOrigin="anonymous"
+                  />
+                ) : (
+                  <video
+                    src={previewModal.file.url}
+                    controls
+                    className="max-w-full max-h-96 rounded-lg bg-gray-800"
+                    onError={(e) => {
+                      console.error('Preview video failed to load:', previewModal.file?.url);
+                      console.error('Error event:', e);
+                      console.error('Error target:', e.target);
+                    }}
+                    onLoadStart={() => {
+                      console.log('Preview video loading started:', previewModal.file?.url);
+                    }}
+                    onCanPlay={() => {
+                      console.log('Preview video can play:', previewModal.file?.url);
+                    }}
+                    crossOrigin="anonymous"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+              </div>
+
+              {/* File Details */}
+              <div className="bg-gray-800 rounded-lg p-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-400">파일명:</span>
+                    <span className="text-white ml-2">{previewModal.file.name}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">크기:</span>
+                    <span className="text-white ml-2">{formatFileSize(previewModal.file.size)}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">업로드:</span>
+                    <span className="text-white ml-2">{formatDate(previewModal.file.uploadedAt)}</span>
+                  </div>
+                  {previewModal.file.dimensions && (
+                    <div>
+                      <span className="text-gray-400">해상도:</span>
+                      <span className="text-white ml-2">
+                        {previewModal.file.dimensions.width}×{previewModal.file.dimensions.height}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* URL Section */}
+              <div className="bg-gray-800 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">
+                    {previewModal.file.type === 'image' ? '이미지 URL:' : '비디오 URL:'}
+                  </span>
+                  <button
+                    onClick={() => copyToClipboard(previewModal.file!.url)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors cursor-pointer"
+                  >
+                    URL 복사
+                  </button>
+                </div>
+                <div className="bg-gray-900 rounded p-3">
+                  <code className="text-green-400 text-sm break-all">{previewModal.file.url}</code>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end p-6 border-t border-gray-800 space-x-3 flex-shrink-0">
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = previewModal.file!.url;
+                  link.download = previewModal.file!.name;
+                  link.click();
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors cursor-pointer"
+              >
+                다운로드
+              </button>
+              <button
+                onClick={() => setPreviewModal({ isOpen: false, file: null })}
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors cursor-pointer "
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className="fixed top-4 right-4 z-50 animate-slideInRight">
+          <div className={`rounded-lg px-4 py-3 shadow-xl border-l-4 backdrop-blur-sm ${
+            toast.type === 'success' 
+              ? 'bg-green-600/95 text-white border-green-400' 
+              : 'bg-red-600/95 text-white border-red-400'
+          }`}>
+            <div className="flex items-center space-x-3">
+              <div className={`w-2 h-2 rounded-full animate-pulse ${
+                toast.type === 'success' ? 'bg-green-300' : 'bg-red-300'
+              }`}></div>
+              <span className="text-sm font-medium">{toast.message}</span>
+              <button
+                onClick={closeToast}
+                className="text-white/80 hover:text-white transition-all duration-200 hover:scale-110 transform cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

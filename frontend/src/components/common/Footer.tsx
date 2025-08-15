@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import LazyImage from "./LazyImage";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -8,7 +9,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto text-sm">
         {/* Logo */}
         <Link to="/" className="block mb-6 sm:mb-8">
-          <img
+          <LazyImage
             src="./logo.svg"
             alt="logo"
             width={167}

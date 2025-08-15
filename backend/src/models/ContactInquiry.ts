@@ -7,9 +7,7 @@ export interface IContactInquiry extends Document {
   subject: string;
   message: string;
   status: 'new' | 'processing' | 'completed';
-  admin_notes: string;
-  createdAt: Date;
-  updatedAt: Date;
+  admin_notes?: string;
 }
 
 // Schema
@@ -19,11 +17,20 @@ const ContactInquirySchema: Schema<IContactInquiry> = new Schema(
     email: { type: String, required: true },
     subject: { type: String, required: true },
     message: { type: String, required: true },
-    status: { type: String, enum: ['new', 'processing', 'completed'], default: 'new' },
+    status: { 
+      type: String, 
+      enum: ['new', 'processing', 'completed'], 
+      default: 'new' 
+    },
     admin_notes: { type: String, default: '' },
   },
   { timestamps: true }
 );
+
+// Index for better query performance
+ContactInquirySchema.index({ createdAt: -1 });
+ContactInquirySchema.index({ status: 1 });
+ContactInquirySchema.index({ email: 1 });
 
 // Model
 const ContactInquiry: Model<IContactInquiry> = mongoose.model<IContactInquiry>(

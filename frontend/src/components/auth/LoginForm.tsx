@@ -2,6 +2,8 @@ import { useState } from "react"
 import type { ChangeEvent, FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
+import LazyImage from "../common/LazyImage"
+import { apiService } from "../../services/api"
 
 
 interface FormData {
@@ -34,19 +36,17 @@ export default function LoginForm() {
     setError("")
 
     try {
-      // API 시뮬레이션
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // 간단 검증
-      if (formData.email === "admin@videocrew.com" && formData.password === "Test@123") {
-        localStorage.setItem("auth_token", "mock_admin_token")
-        localStorage.setItem("user_role", "admin")
+      // Call real API
+      const response = await apiService.login(formData)
+      
+      if (response.success) {
         navigate("/admin/dashboard") // 대시보드로 이동
       } else {
-        setError("이메일 또는 비밀번호가 올바르지 않습니다.")
+        setError(response.message || "이메일 또는 비밀번호가 올바르지 않습니다.")
       }
-    } catch (err) {
-      setError("로그인 중 오류가 발생했습니다. 다시 시도해주세요.")
+    } catch (err: any) {
+      console.error('Login error:', err)
+      setError(err.message || "로그인 중 오류가 발생했습니다. 다시 시도해주세요.")
     } finally {
       setIsLoading(false)
     }
@@ -59,7 +59,7 @@ export default function LoginForm() {
           {/* 헤더 */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-1 mb-4">
-              <img src="/logo.svg" />
+              <LazyImage src="/logo.svg" alt="Video Crew Logo" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2 font-korean">관리자 로그인</h1>
             <p className="text-gray-400 font-korean">관리자 계정으로 로그인하세요</p>

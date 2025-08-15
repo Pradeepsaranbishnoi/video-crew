@@ -1,13 +1,15 @@
+import LazyImage from "../common/LazyImage";
+
 export default function WorkCulture() {
   return (
     <section className="mt-[-100px] sm:mt-[-120px] lg:mt-[-150px] pt-0 py-16 sm:py-20 lg:py-24 px-4 sm:px-6 bg-black relative overflow-hidden">
       {/* Background Images */}
-      <img
+      <LazyImage
         src="/about us page assets (1)/Image/left-bg.png"
         className="absolute left-0 top-[-20%] sm:top-[-30%] lg:top-[-35%] w-[150px] sm:w-[200px] lg:w-auto"
         alt="Left Background"
       />
-      <img
+      <LazyImage
         src="/about us page assets (1)/Image/right-bg.png"
         className="absolute right-0 bottom-0 w-[150px] sm:w-[200px] lg:w-auto"
         alt="Right Background"
@@ -29,7 +31,7 @@ export default function WorkCulture() {
           {/* Work Performance */}
           <div className="group cursor-pointer">
             <div className="relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-[420px] overflow-hidden bg-gray-900 border border-solid [border-image:linear-gradient(to_bottom,#2E2E2E,#2E2E2E_40%,#ffffff_100%)_1] [border-image-slice:1]">
-              <img
+              <LazyImage
                 src="/about us page assets (1)/Image/placeholder-2.webp"
                 alt="Work Performance"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -50,7 +52,7 @@ export default function WorkCulture() {
           {/* Specialization */}
           <div className="group cursor-pointer">
             <div className="relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-[420px] overflow-hidden bg-gray-900 border border-solid [border-image:linear-gradient(to_bottom,#2E2E2E,#2E2E2E_40%,#ffffff_100%)_1] [border-image-slice:1]">
-              <img
+              <LazyImage
                 src="/about us page assets (1)/Image/placeholder-1.webp"
                 alt="Specialization"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -72,7 +74,7 @@ export default function WorkCulture() {
         {/* Knowledge Sharing - Full Width */}
         <div className="group cursor-pointer">
           <div className="relative h-[260px] sm:h-[320px] md:h-[380px] lg:h-[450px] overflow-hidden bg-gray-900 border border-solid [border-image:linear-gradient(to_bottom,#2E2E2E,#2E2E2E_40%,#ffffff_100%)_1] [border-image-slice:1]">
-            <img
+            <LazyImage
               src="/about us page assets (1)/Image/placeholder.webp"
               alt="Knowledge Sharing"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

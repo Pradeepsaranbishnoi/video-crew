@@ -1,33 +1,43 @@
 import 'dotenv/config';
-import connectDB from '../config/db';
-import AdminUser from '../models/AdminUser';
+import { connectDB, initDatabase } from '../config/db';
+import { DatabaseService } from '../services/database';
 
-const run = async () => {
+const createDefaultAdmin = async () => {
   try {
+    console.log('🔧 Creating default admin user...');
+    
+    // Connect to database
     await connectDB();
-
-    const email = process.env.ADMIN_EMAIL;
-    const password = process.env.ADMIN_PASSWORD;
-
-    if (!email || !password) {
-      console.error('Set ADMIN_EMAIL and ADMIN_PASSWORD in .env');
-      process.exit(1);
+    await initDatabase();
+    
+    // Check if admin already exists
+    const existingAdmin = await DatabaseService.findAdminByEmail('admin@videocrew.com');
+    
+    if (existingAdmin) {
+      console.log('⚠️  Admin user already exists');
+      return;
     }
-
-    const exists = await AdminUser.findOne({ email: email.toLowerCase() });
-    if (exists) {
-      console.log('Admin already exists:', exists.email);
-      process.exit(0);
-    }
-
-    const admin = new AdminUser({ email, password, name: 'Admin User' });
-    await admin.save();
-    console.log('Admin created:', admin.email);
+    
+    // Create default admin user
+    const adminUser = {
+      email: 'admin@videocrew.com',
+      password: 'Test@123',
+      name: 'Admin User'
+    };
+    
+    const createdAdmin = await DatabaseService.createAdminUser(adminUser);
+    
+    console.log('✅ Default admin user created successfully');
+    console.log('📧 Email:', createdAdmin.email);
+    console.log('👤 Name:', createdAdmin.name);
+    console.log('�� ID:', createdAdmin._id);
+    
     process.exit(0);
-  } catch (err: any) {
-    console.error(err.message || err);
+  } catch (error) {
+    console.error('❌ Error creating admin user:', error);
     process.exit(1);
   }
 };
 
-run();
+// Run the script
+createDefaultAdmin();

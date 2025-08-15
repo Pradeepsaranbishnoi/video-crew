@@ -9,14 +9,29 @@ type ServicesGridProps = {
   services: Service[];
 };
 
+import LazyImage from "./LazyImage";
+import { motion } from "framer-motion";
+
 export default function ServicesGrid({ services }: ServicesGridProps) {
   return (
     <div className="max-w-7xl mx-auto px-6 pt-20">
       <div className="grid md:grid-cols-3 gap-8">
         {services.map((service, index) => (
-          <div key={index} className="group cursor-pointer">
+          <motion.div 
+            key={index} 
+            className="group cursor-pointer"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ 
+              duration: 0.6, 
+              delay: index * 0.2,
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
+            whileHover={{ y: -10 }}
+          >
             <div className="relative h-96 mb-8 overflow-hidden border-[1px] border-solid [border-image:linear-gradient(to_bottom,#2E2E2E,#2E2E2E_40%,#ffffff_100%)_1] [border-image-slice:1]">
-              <img
+              <LazyImage
                 src={service.image || "/placeholder.svg"}
                 alt={service.title}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
@@ -33,7 +48,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

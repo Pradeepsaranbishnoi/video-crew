@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { FolderOpen, MessageSquare, Upload, TrendingUp, Users, Eye, Calendar } from "lucide-react";
+import Seo from "../../components/common/Seo";
+import { apiService } from "../../services/api";
 
 interface DashboardStats {
   totalPortfolio: number;
@@ -45,19 +47,39 @@ export default function Dashboard() {
     },
   ]);
 
-  // Simulate loading stats
+  // Load real stats from API
   useEffect(() => {
     console.log("Dashboard useEffect running"); // Debug log
     const loadStats = async () => {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setStats({
-        totalPortfolio: 24,
-        totalContacts: 156,
-        totalMedia: 89,
-        monthlyViews: 12450,
-      });
+      try {
+        // Load portfolio items
+        const portfolioItems = await apiService.getPortfolioItems();
+        
+        // Load contact inquiries
+        const contactInquiries = await apiService.getContactInquiries();
+        
+        // Calculate stats
+        const totalPortfolio = portfolioItems.length;
+        const totalContacts = contactInquiries.length;
+        const totalMedia = portfolioItems.length; // For now, using portfolio count as media count
+        const monthlyViews = Math.floor(Math.random() * 20000) + 5000; // Mock views for now
+        
+        setStats({
+          totalPortfolio,
+          totalContacts,
+          totalMedia,
+          monthlyViews,
+        });
+      } catch (error) {
+        console.error('Failed to load dashboard stats:', error);
+        // Fallback to default stats
+        setStats({
+          totalPortfolio: 0,
+          totalContacts: 0,
+          totalMedia: 0,
+          monthlyViews: 0,
+        });
+      }
     };
 
     loadStats();
@@ -124,6 +146,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <Seo title="Admin Dashboard" description="비디오크루 관리자 – 대시보드 통계와 최근 활동 관리" />
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white">
         <h2 className="text-2xl font-bold mb-2 font-korean">관리자 대시보드에 오신 것을 환영합니다!</h2>
